@@ -1,7 +1,9 @@
-node_modules
-dist
-data
+target/
+*.class
+.idea/
+*.iml
+.vscode/
+data/
 *.log
 .env
 .agents/
-
