@@ -1,29 +1,60 @@
-# VIETTORIA Backend — CMS & REST API Engine
+# VIETTORIA — Spring Boot Backend & CMS Engine
 
-Backend phục vụ nền tảng VIETTORIA (Phygital Heritage Collectibles) theo đặc tả BA MVP (`source/docs/SRS/VIETTORIA_BA_MVP_ChiTiet.docx`).
+Backend REST API và Hệ thống Quản trị Nội dung (CMS) cho nền tảng di sản kiến trúc **VIETTORIA**.
 
-## Công nghệ
-- Node.js + Express + TypeScript
-- JSON ACID Database Storage
-- JWT Authentication cho CMS Admin
-- RESTful Public & Admin APIs
+## Công nghệ sử dụng
+- **Java**: 17 LTS (Oracle JDK / OpenJDK)
+- **Spring Boot**: 3.4.2
+- **Spring Data JPA & Hibernate**: Quản lý truy vấn ORM
+- **Spring Security 6 & JJWT 0.12.6**: Xác thực phi trạng thái (Stateless JWT Bearer Token)
+- **Cơ sở dữ liệu**: H2 Database (File-based persistence tại `./data/viettoria_db`, sẵn sàng kết nối PostgreSQL)
+- **Quản lý dự án & Build**: Apache Maven 3.9+
 
-## Cài đặt & Khởi chạy
+---
 
+## Hướng dẫn cài đặt & Khởi chạy
+
+### 1. Build ứng dụng
 ```bash
-# Cài đặt thư viện
-npm install
-
-# Chạy chế độ phát triển
-npm run dev
-
-# Đóng gói và chạy production
-npm run build
-npm start
+mvn clean package -DskipTests
 ```
 
-Mặc định chạy tại cổng: `http://localhost:5000`
+### 2. Khởi chạy ứng dụng
+```bash
+# Cách 1: Chạy trực tiếp từ file JAR
+java -jar target/viettoria-be-1.0.0.jar
 
-### Tài khoản CMS mặc định:
-- Username: `admin`
-- Password: `viettoria@2026`
+# Cách 2: Chạy thông qua Maven plugin
+mvn spring-boot:run
+```
+
+Server sẽ khởi chạy tại: **`http://localhost:5000`**
+
+---
+
+## Hệ thống REST API
+
+### 1. Kiểm tra trạng thái máy chủ
+- `GET /api/health`
+
+### 2. Dành cho công chúng (Public)
+- `GET /api/public/featured`: Dữ liệu tiêu điểm (Hero Product, tuyển tập, bài viết mới)
+- `GET /api/public/collections`: Danh sách bộ sưu tập di sản theo thời kỳ
+- `GET /api/public/collections/{slug}`: Chi tiết bộ sưu tập kèm danh sách mô hình
+- `GET /api/public/products?collectionId={id}&search={keyword}`: Danh mục mô hình 3D
+- `GET /api/public/products/{slugOrCode}`: Chi tiết mô hình kèm Story Blocks và Audio Guide
+- `GET /api/public/qr-resolve?code={code}`: Phân giải mã tem QR dưới đế mô hình
+- `GET /api/public/blogs`: Danh sách bài viết khảo cứu văn hóa
+- `GET /api/public/blogs/{slug}`: Đọc bài viết nghiên cứu
+
+### 3. Dành cho Quản trị viên (CMS Admin)
+*Yêu cầu Header:* `Authorization: Bearer <token>`
+- `POST /api/admin/auth/login`: Đăng nhập cấp JWT (Tài khoản: `admin` / `viettoria@2026`)
+- `GET /api/admin/dashboard`: Bảng thống kê số liệu di sản
+- `CRUD /api/admin/products`: Quản lý thông số kỹ thuật mô hình
+- `CRUD /api/admin/products/{productId}/stories`: Quản lý các khối Story Blocks
+- `PUT /api/admin/products/{productId}/stories/reorder`: Đổi thứ tự hiển thị của các khối câu chuyện
+- `CRUD /api/admin/collections`: Quản lý danh mục thời kỳ lịch sử
+- `CRUD /api/admin/blogs`: Quản lý bài viết góc văn hóa
+- `GET /api/admin/media`: Kho lưu trữ hình ảnh khảo cứu
+- **H2 Web Console**: `http://localhost:5000/h2-console` (JDBC URL: `jdbc:h2:file:./data/viettoria_db`)
