@@ -7,8 +7,29 @@ Backend REST API và Hệ thống Quản trị Nội dung (CMS) cho nền tảng
 - **Spring Boot**: 3.4.2
 - **Spring Data JPA & Hibernate**: Quản lý truy vấn ORM
 - **Spring Security 6 & JJWT 0.12.6**: Xác thực phi trạng thái (Stateless JWT Bearer Token)
-- **Cơ sở dữ liệu**: H2 Database (File-based persistence tại `./data/viettoria_db`, sẵn sàng kết nối PostgreSQL)
+- **Cơ sở dữ liệu**: PostgreSQL (Hỗ trợ Neon Serverless Database qua tệp `.env`) / H2 fallback
 - **Quản lý dự án & Build**: Apache Maven 3.9+
+
+---
+
+## Cấu hình Biến Môi Trường (.env)
+
+Hệ thống tự động nạp cấu hình từ tệp `.env` tại thư mục gốc của Backend (`source/viettoria-BE/.env`).
+
+Tệp `.env` đã được đưa vào `.gitignore` để đảm bảo an toàn thông tin mật. Mẫu cấu hình tham khảo được lưu tại `.env.example`:
+
+```bash
+# Sao chép mẫu cấu hình
+cp .env.example .env
+```
+
+Các biến môi trường chính:
+- `DATABASE_URL`: URI kết nối PostgreSQL (Neon / Supabase / RDS).
+- `SPRING_DATASOURCE_URL`: JDBC URL kết nối cơ sở dữ liệu (`jdbc:postgresql://...`).
+- `SPRING_DATASOURCE_USERNAME`: Tên người dùng database.
+- `SPRING_DATASOURCE_PASSWORD`: Mật khẩu database.
+- `SERVER_PORT`: Cổng máy chủ (mặc định: `5000`).
+- `JWT_SECRET`: Khóa bí mật ký token HMAC-SHA256.
 
 ---
 

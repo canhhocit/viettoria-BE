@@ -1,36 +1,31 @@
 server:
-  port: 5000
+  port: ${SERVER_PORT:5000}
 
 spring:
   application:
     name: viettoria-be
 
   datasource:
-    url: jdbc:h2:file:./data/viettoria_db;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
-
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-      settings:
-        web-allow-others: true
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://ep-fancy-bird-ao2cjtis-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require}}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:neondb_owner}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:npg_7YA9zHJuhmcx}}
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
 
 app:
   jwt:
-    secret: viettoria-heritage-secret-key-2026-very-secure-and-long-token-for-signing-hmac-sha256
-    expiration-ms: 86400000 # 24 hours
+    secret: ${JWT_SECRET:viettoria-heritage-secret-key-2026-very-secure-and-long-token-for-signing-hmac-sha256}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
   cors:
     allowed-origins:
       - http://localhost:5173
