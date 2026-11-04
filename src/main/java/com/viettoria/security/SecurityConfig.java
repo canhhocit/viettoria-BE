@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -49,9 +50,10 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/health", "/api/health/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
-                        .requestMatchers("/api/admin/auth/login").permitAll()
+                        .requestMatchers("/api/admin/auth/login", "/api/admin/auth/demo").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "DEMO")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

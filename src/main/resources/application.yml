@@ -12,6 +12,11 @@ spring:
   application:
     name: viettoria-be
 
+  servlet:
+    multipart:
+      max-file-size: ${MAX_UPLOAD_FILE_SIZE:100MB}
+      max-request-size: ${MAX_UPLOAD_REQUEST_SIZE:105MB}
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:viettoria_db}}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
@@ -30,6 +35,12 @@ spring:
             non_contextual_creation: true
 
 app:
+  upload:
+    dir: ${APP_UPLOAD_DIR:uploads}
+  cloudinary:
+    cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+    api-key: ${CLOUDINARY_API_KEY:}
+    api-secret: ${CLOUDINARY_API_SECRET:}
   keep-alive:
     enabled: ${SELF_KEEPALIVE_ENABLED:true}
     interval-ms: ${SELF_KEEPALIVE_INTERVAL_MS:300000}

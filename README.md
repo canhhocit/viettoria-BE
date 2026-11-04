@@ -33,6 +33,8 @@ Các biến môi trường chính:
 - `SELF_KEEPALIVE_ENABLED`: Bật/tắt backend tự gọi health ping (mặc định: `true`).
 - `SELF_KEEPALIVE_INTERVAL_MS`: Chu kỳ self-ping theo mili giây (mặc định: `300000`, tức 5 phút).
 - `SELF_KEEPALIVE_URL`: URL self-ping, mặc định là loopback của backend.
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`: thông tin Cloudinary dùng để ký upload ảnh và mô hình GLB. API Secret chỉ đặt ở backend, không đưa vào frontend.
+- `DEMO_LOGIN_ENABLED`: bật nút vào CMS không cần tài khoản trong giai đoạn demo (mặc định `true`); token demo chỉ có quyền đọc và hết hạn sau 30 phút.
 
 ---
 
@@ -84,6 +86,7 @@ Backend cũng tự gọi endpoint nội bộ mỗi 5 phút. Self-ping giữ data
 ### 3. Dành cho Quản trị viên (CMS Admin)
 *Yêu cầu Header:* `Authorization: Bearer <token>`
 - `POST /api/admin/auth/login`: Đăng nhập cấp JWT. Tài khoản khởi tạo lấy từ `ADMIN_USERNAME` và `ADMIN_PASSWORD`.
+- `POST /api/admin/auth/demo`: Cấp JWT demo không cần thông tin đăng nhập; chỉ cho phép GET và không thể tạo, sửa, xóa hoặc tải tệp lên.
 - `GET /api/admin/dashboard`: Bảng thống kê số liệu di sản
 - `CRUD /api/admin/products`: Quản lý thông số kỹ thuật mô hình
 - `CRUD /api/admin/products/{productId}/stories`: Quản lý các khối Story Blocks
@@ -91,10 +94,13 @@ Backend cũng tự gọi endpoint nội bộ mỗi 5 phút. Self-ping giữ data
 - `CRUD /api/admin/collections`: Quản lý danh mục thời kỳ lịch sử
 - `CRUD /api/admin/blogs`: Quản lý bài viết góc văn hóa
 - `GET /api/admin/media`: Kho lưu trữ hình ảnh khảo cứu
+- `POST /api/admin/media/upload-signature`: Cấp chữ ký upload có thời hạn cho quản trị viên; chỉ ký thư mục ảnh hoặc mô hình GLB đã định sẵn.
+- `POST /api/admin/media`: Lưu URL Cloudinary và thông tin tài sản vào database sau khi tải lên thành công.
+- `POST /api/admin/media/fallback-upload`: Tải file multipart vào backend khi Cloudinary chưa được cấu hình hoặc upload thất bại.
 - **H2 Web Console**: `http://localhost:8081/h2-console` (JDBC URL: `jdbc:h2:file:./data/viettoria_db`)
 
 ## Deploy BE lên Render
 
-Repo có `Dockerfile` và `render.yaml` để tạo Web Service bằng Render Blueprint. Khi Render hỏi các biến `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_PASSWORD` và `CORS_ALLOWED_ORIGINS`, nhập các giá trị production trong Dashboard; không commit chúng vào Git. Blueprint tự tạo `JWT_SECRET` ngẫu nhiên. CORS cần chứa domain production của Vercel, ví dụ `https://<project>.vercel.app`.
+Repo có `Dockerfile` và `render.yaml` để tạo Web Service bằng Render Blueprint. Khi Render hỏi các biến `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `ADMIN_USERNAME`, `ADMIN_PASSWORD`, `CORS_ALLOWED_ORIGINS` và ba biến Cloudinary, nhập các giá trị production trong Dashboard; không commit chúng vào Git. Blueprint tự tạo `JWT_SECRET` ngẫu nhiên. CORS cần chứa domain production của Vercel, ví dụ `https://<project>.vercel.app`. Fallback lưu file tại `APP_UPLOAD_DIR` trên máy chủ; với Render cần gắn persistent disk vào thư mục này nếu muốn file backend còn tồn tại qua lần redeploy/restart.
 
 Nếu dùng lại database đã có tài khoản admin, seed chỉ tạo tài khoản khi bảng admin đang trống; đặt biến mới không đổi mật khẩu của tài khoản đã tồn tại. Hãy đổi mật khẩu admin hiện có trước khi public service.

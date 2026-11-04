@@ -25,6 +25,12 @@ public class MediaItemEntity {
     @Column(nullable = false, length = 500)
     private String url;
 
+    @Column(name = "public_id", length = 255)
+    private String publicId;
+
+    @Column(name = "resource_type", length = 16)
+    private String resourceType;
+
     @Column(name = "alt_text", length = 255)
     private String altText;
 
@@ -51,6 +57,12 @@ public class MediaItemEntity {
 
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
+
+    public String getPublicId() { return publicId; }
+    public void setPublicId(String publicId) { this.publicId = publicId; }
+
+    public String getResourceType() { return resourceType; }
+    public void setResourceType(String resourceType) { this.resourceType = resourceType; }
 
     public String getAltText() { return altText; }
     public void setAltText(String altText) { this.altText = altText; }

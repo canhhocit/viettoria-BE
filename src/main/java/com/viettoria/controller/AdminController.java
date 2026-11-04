@@ -1,8 +1,14 @@
 package com.viettoria.controller;
 
 import com.viettoria.dto.*;
+import com.viettoria.service.CloudinaryUploadService;
 import com.viettoria.service.HeritageService;
+import com.viettoria.service.MediaStorageService;
+import com.viettoria.service.MediaStorageService.StoredMedia;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +19,19 @@ import java.util.Map;
 public class AdminController {
 
     private final HeritageService heritageService;
+    private final CloudinaryUploadService cloudinaryUploadService;
+    private final MediaStorageService mediaStorageService;
+    private final boolean demoLoginEnabled;
 
-    public AdminController(HeritageService heritageService) {
+    public AdminController(
+            HeritageService heritageService,
+            CloudinaryUploadService cloudinaryUploadService,
+            MediaStorageService mediaStorageService,
+            @Value("${DEMO_LOGIN_ENABLED:true}") boolean demoLoginEnabled) {
         this.heritageService = heritageService;
+        this.cloudinaryUploadService = cloudinaryUploadService;
+        this.mediaStorageService = mediaStorageService;
+        this.demoLoginEnabled = demoLoginEnabled;
     }
 
     // --- AUTH ---
@@ -27,6 +43,14 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(401).body(ApiResponse.error(e.getMessage()));
         }
+    }
+
+    @PostMapping("/auth/demo")
+    public ResponseEntity<ApiResponse<AuthDto.LoginResponse>> loginDemo() {
+        if (!demoLoginEnabled) {
+            return ResponseEntity.status(404).body(ApiResponse.error("Đăng nhập demo hiện đang tắt."));
+        }
+        return ResponseEntity.ok(ApiResponse.ok(heritageService.loginDemo(), "Đã vào chế độ xem thử."));
     }
 
     // --- DASHBOARD ---
@@ -149,5 +173,37 @@ public class AdminController {
     @GetMapping("/media")
     public ResponseEntity<ApiResponse<List<MediaItemDto>>> getMedia() {
         return ResponseEntity.ok(ApiResponse.ok(heritageService.adminGetMedia()));
+    }
+
+    @PostMapping("/media/upload-signature")
+    public ResponseEntity<ApiResponse<CloudinaryUploadSignatureDto>> createMediaUploadSignature(
+            @RequestBody CloudinaryUploadSignatureRequest request) {
+        CloudinaryUploadSignatureDto signature = cloudinaryUploadService.createUploadSignature(
+                request.resourceType(), request.fileExtension());
+        return ResponseEntity.ok(ApiResponse.ok(signature));
+    }
+
+    @PostMapping("/media")
+    public ResponseEntity<ApiResponse<MediaItemDto>> saveMedia(@RequestBody MediaItemDto dto) {
+        cloudinaryUploadService.validateUploadedMedia(dto.getUrl(), dto.getResourceType(), dto.getPublicId());
+        return ResponseEntity.status(201).body(ApiResponse.ok(heritageService.adminCreateMedia(dto), "Đã lưu tệp Cloudinary vào thư viện."));
+    }
+
+    @PostMapping(value = "/media/fallback-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<MediaItemDto>> uploadMediaToBackend(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "altText", required = false) String altText) {
+        StoredMedia stored = mediaStorageService.store(file);
+        String displayName = name == null || name.isBlank() ? stored.originalName().replaceFirst("\\.[^.]+$", "") : name;
+        MediaItemDto dto = new MediaItemDto();
+        dto.setName(displayName);
+        dto.setFileName(stored.originalName());
+        dto.setFileType(stored.fileType());
+        dto.setFileSize(stored.fileSize());
+        dto.setUrl(stored.url());
+        dto.setResourceType(stored.resourceType());
+        dto.setAltText(altText);
+        return ResponseEntity.status(201).body(ApiResponse.ok(heritageService.adminCreateMedia(dto), "Cloudinary chưa khả dụng; tệp đã được lưu trên backend."));
     }
 }

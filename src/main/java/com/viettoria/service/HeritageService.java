@@ -193,6 +193,15 @@ public class HeritageService {
     }
 
     @Transactional(readOnly = true)
+    public AuthDto.LoginResponse loginDemo() {
+        String username = "demo-viewer";
+        String token = tokenProvider.generateToken(username, "DEMO", 30 * 60 * 1000L);
+        AuthDto.AdminUserDto userDto = new AuthDto.AdminUserDto(
+                username, username, "Khách trải nghiệm VIETTORIA", "DEMO");
+        return new AuthDto.LoginResponse(token, userDto);
+    }
+
+    @Transactional(readOnly = true)
     public Map<String, Object> getDashboardStats() {
         long totalProducts = productRepo.count();
         long publishedProducts = productRepo.countByStatus("published");
@@ -400,6 +409,37 @@ public class HeritageService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public MediaItemDto adminCreateMedia(MediaItemDto dto) {
+        if (dto.getName() == null || dto.getName().isBlank()
+                || dto.getFileName() == null || dto.getFileName().isBlank()
+                || dto.getUrl() == null || dto.getUrl().isBlank()
+                || dto.getFileSize() <= 0) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Thông tin tệp tải lên chưa đầy đủ.");
+        }
+        if (dto.getName().length() > 255 || dto.getFileName().length() > 255
+                || dto.getUrl().length() > 500
+                || (dto.getFileType() != null && dto.getFileType().length() > 64)
+                || (dto.getAltText() != null && dto.getAltText().length() > 255)
+                || (dto.getPublicId() != null && dto.getPublicId().length() > 255)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "Thông tin media vượt quá giới hạn lưu trữ.");
+        }
+        MediaItemEntity entity = new MediaItemEntity();
+        entity.setId(UUID.randomUUID().toString());
+        entity.setName(dto.getName().trim());
+        entity.setFileName(dto.getFileName().trim());
+        entity.setFileType(dto.getFileType());
+        entity.setFileSize(dto.getFileSize());
+        entity.setUrl(dto.getUrl());
+        entity.setPublicId(dto.getPublicId());
+        entity.setResourceType(dto.getResourceType());
+        entity.setAltText(dto.getAltText());
+        entity.setUploadedAt(Instant.now().toString());
+        return mapMediaToDto(mediaItemRepo.save(entity));
+    }
+
     // --- MAPPERS ---
 
     private CollectionDto mapCollectionToDto(CollectionEntity c) {
@@ -584,6 +624,8 @@ public class HeritageService {
         dto.setFileType(m.getFileType());
         dto.setFileSize(m.getFileSize());
         dto.setUrl(m.getUrl());
+        dto.setPublicId(m.getPublicId());
+        dto.setResourceType(m.getResourceType());
         dto.setAltText(m.getAltText());
         dto.setUploadedAt(m.getUploadedAt());
         return dto;

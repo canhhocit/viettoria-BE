@@ -23,8 +23,12 @@ public class JwtTokenProvider {
     }
 
     public String generateToken(String username, String role) {
+        return generateToken(username, role, expirationMs);
+    }
+
+    public String generateToken(String username, String role, long tokenExpirationMs) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expirationMs);
+        Date expiryDate = new Date(now.getTime() + tokenExpirationMs);
 
         return Jwts.builder()
                 .subject(username)
@@ -42,6 +46,15 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.getSubject();
+    }
+
+    public String getRoleFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.get("role", String.class);
     }
 
     public boolean validateToken(String token) {
