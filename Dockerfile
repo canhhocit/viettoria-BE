@@ -2,8 +2,10 @@ FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /workspace
 
 COPY pom.xml .
+COPY maven-settings-render.xml /tmp/maven-settings-render.xml
 COPY src ./src
-RUN mvn -B -DskipTests package
+RUN mvn -s /tmp/maven-settings-render.xml -B -DskipTests package \
+    || mvn -B -DskipTests package
 
 FROM eclipse-temurin:17-jre
 WORKDIR /app
