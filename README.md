@@ -85,7 +85,7 @@ Backend cũng tự gọi endpoint nội bộ mỗi 5 phút. Self-ping giữ data
 
 ### 3. Dành cho Quản trị viên (CMS Admin)
 *Yêu cầu Header:* `Authorization: Bearer <token>`
-- `POST /api/admin/auth/login`: Đăng nhập cấp JWT. Tài khoản khởi tạo lấy từ `ADMIN_USERNAME` và `ADMIN_PASSWORD`.
+- `POST /api/admin/auth/login`: Đăng nhập cấp JWT. Tài khoản được đồng bộ từ `ADMIN_USERNAME` và `ADMIN_PASSWORD` mỗi lần BE khởi động; mật khẩu chỉ được lưu dưới dạng hash trong database.
 - `POST /api/admin/auth/demo`: Cấp JWT demo không cần thông tin đăng nhập; username trong phiên dùng giá trị `ADMIN_USERNAME`, nhưng role vẫn là `DEMO`, chỉ cho phép GET và không thể tạo, sửa, xóa hoặc tải tệp lên. Mật khẩu quản trị không được gửi xuống FE.
 - `GET /api/admin/dashboard`: Bảng thống kê số liệu di sản
 - `CRUD /api/admin/products`: Quản lý thông số kỹ thuật mô hình

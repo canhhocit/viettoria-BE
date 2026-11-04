@@ -46,17 +46,8 @@ public class DataInitializer implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        // Seed Admin User
-        if (adminUserRepo.count() == 0) {
-            AdminUserEntity admin = new AdminUserEntity(
-                    "admin-1",
-                    adminUsername,
-                    passwordEncoder.encode(adminPassword),
-                    "Quản Trị Viên Viettoria",
-                    "ADMIN"
-            );
-            adminUserRepo.save(admin);
-        }
+        // Keep the configured admin credentials as the source of truth across restarts.
+        syncAdminUserFromEnvironment();
 
         // Seed Collections
         if (collectionRepo.count() == 0) {
@@ -396,5 +387,24 @@ public class DataInitializer implements ApplicationRunner {
 
             mediaItemRepo.saveAll(Arrays.asList(m1, m2, m3, m4));
         }
+    }
+
+    private void syncAdminUserFromEnvironment() {
+        AdminUserEntity admin = adminUserRepo.findByUsername(adminUsername)
+                .or(() -> adminUserRepo.findById("admin-1"))
+                .orElseGet(() -> new AdminUserEntity(
+                        "admin-1",
+                        adminUsername,
+                        passwordEncoder.encode(adminPassword),
+                        "Quản Trị Viên Viettoria",
+                        "ADMIN"));
+
+        admin.setUsername(adminUsername);
+        if (admin.getPassword() == null || !passwordEncoder.matches(adminPassword, admin.getPassword())) {
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+        }
+        admin.setFullName("Quản Trị Viên Viettoria");
+        admin.setRole("ADMIN");
+        adminUserRepo.save(admin);
     }
 }
