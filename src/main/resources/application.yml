@@ -1,15 +1,15 @@
 server:
-  port: ${SERVER_PORT:5000}
+  port: ${SERVER_PORT:${PORT:8081}}
 
 spring:
   application:
     name: viettoria-be
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://ep-fancy-bird-ao2cjtis-pooler.c-2.ap-southeast-1.aws.neon.tech/neondb?sslmode=require}}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:viettoria_db}}
     driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
-    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:neondb_owner}}
-    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:npg_7YA9zHJuhmcx}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:postgres}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:}}
 
   jpa:
     hibernate:
@@ -23,11 +23,16 @@ spring:
             non_contextual_creation: true
 
 app:
+  keep-alive:
+    enabled: ${SELF_KEEPALIVE_ENABLED:true}
+    interval-ms: ${SELF_KEEPALIVE_INTERVAL_MS:300000}
+    initial-delay-ms: ${SELF_KEEPALIVE_INITIAL_DELAY_MS:300000}
+    url: ${SELF_KEEPALIVE_URL:http://127.0.0.1:${server.port}/api/health/ping}
   jwt:
-    secret: ${JWT_SECRET:viettoria-heritage-secret-key-2026-very-secure-and-long-token-for-signing-hmac-sha256}
+    secret: ${JWT_SECRET}
     expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours
+  admin:
+    username: ${ADMIN_USERNAME}
+    password: ${ADMIN_PASSWORD}
   cors:
-    allowed-origins:
-      - http://localhost:5173
-      - http://localhost:5174
-      - http://localhost:3000
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5174,http://localhost:3000}

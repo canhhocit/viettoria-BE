@@ -2,6 +2,7 @@ package com.viettoria.config;
 
 import com.viettoria.entity.*;
 import com.viettoria.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,8 @@ public class DataInitializer implements ApplicationRunner {
     private final MediaItemRepository mediaItemRepo;
     private final AdminUserRepository adminUserRepo;
     private final PasswordEncoder passwordEncoder;
+    private final String adminUsername;
+    private final String adminPassword;
 
     public DataInitializer(
             CollectionRepository collectionRepo,
@@ -27,7 +30,9 @@ public class DataInitializer implements ApplicationRunner {
             BlogPostRepository blogPostRepo,
             MediaItemRepository mediaItemRepo,
             AdminUserRepository adminUserRepo,
-            PasswordEncoder passwordEncoder) {
+            PasswordEncoder passwordEncoder,
+            @Value("${app.admin.username}") String adminUsername,
+            @Value("${app.admin.password}") String adminPassword) {
         this.collectionRepo = collectionRepo;
         this.productRepo = productRepo;
         this.storyBlockRepo = storyBlockRepo;
@@ -35,6 +40,8 @@ public class DataInitializer implements ApplicationRunner {
         this.mediaItemRepo = mediaItemRepo;
         this.adminUserRepo = adminUserRepo;
         this.passwordEncoder = passwordEncoder;
+        this.adminUsername = adminUsername;
+        this.adminPassword = adminPassword;
     }
 
     @Override
@@ -43,8 +50,8 @@ public class DataInitializer implements ApplicationRunner {
         if (adminUserRepo.count() == 0) {
             AdminUserEntity admin = new AdminUserEntity(
                     "admin-1",
-                    "admin",
-                    passwordEncoder.encode("viettoria@2026"),
+                    adminUsername,
+                    passwordEncoder.encode(adminPassword),
                     "Quản Trị Viên Viettoria",
                     "ADMIN"
             );

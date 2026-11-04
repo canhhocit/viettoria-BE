@@ -382,6 +382,7 @@ public class HeritageService {
         if (dto.getAuthor() != null) entity.setAuthor(dto.getAuthor());
         if (dto.getCategory() != null) entity.setCategory(dto.getCategory());
         if (dto.getReadTime() != null) entity.setReadTime(dto.getReadTime());
+        if (dto.getPublishedAt() != null) entity.setPublishedAt(dto.getPublishedAt());
         if (dto.getStatus() != null) entity.setStatus(dto.getStatus());
         return mapBlogToDto(blogPostRepo.save(entity));
     }
