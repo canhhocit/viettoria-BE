@@ -58,6 +58,11 @@ Server sẽ khởi chạy tại: **`http://localhost:8081`**
 
 ## Hệ thống REST API
 
+### Swagger / OpenAPI
+- Swagger UI: `http://localhost:8081/swagger-ui.html`
+- OpenAPI JSON: `http://localhost:8081/v3/api-docs`
+- Các endpoint quản trị được đánh dấu Bearer JWT trong Swagger. Đăng nhập qua `/api/admin/auth/login`, sau đó dán token vào nút **Authorize** để gọi các API cần đăng nhập.
+
 ### 1. Kiểm tra trạng thái máy chủ
 - `GET /api/health`
 - `GET /api/health/ping` — endpoint công khai cho cron bên ngoài; kiểm tra backend và chạy `SELECT 1` trên database. Trả về HTTP 200 khi cả hai hoạt động, HTTP 503 khi database không kết nối được.
