@@ -250,11 +250,11 @@ public class DataInitializer implements ApplicationRunner {
             b2.setId("b-2");
             b2.setProductId("prod-1");
             b2.setType("text_image");
-            b2.setTitle("Đỉnh Cao Trí Tuệ Mộng Gỗ Đại Việt");
+            b2.setTitle("Đỉnh Cao Kiến Trúc Gỗ Đại Việt");
             b2.setSubtitle("Kết cấu xà nách 8 cánh vươn tỏa độc nhất vô nhị");
-            b2.setContent("Khác biệt hoàn toàn với mọi ngôi chùa Phật giáo tại Đông Á, Chùa Một Cột chỉ sử dụng một trụ đá tròn đường kính 1.25m làm trụ cột nâng đỡ toàn bộ gian điện gỗ nặng hàng chục tấn.\n\nTám thanh xà gỗ lim to bản được đẽo mộng âm dương gài chéo góc 45 độ tỏa đều như tám cánh sen đỡ lấy đài Phật. Toàn bộ trọng lực được truyền thẳng đứng xuống đáy hồ Linh Chiểu qua cơ chế khóa mộng ma sát tự nhiên không cần bất kỳ chiếc đinh kim loại nào.");
+            b2.setContent("Khác biệt hoàn toàn với mọi ngôi chùa Phật giáo tại Đông Á, Chùa Một Cột chỉ sử dụng một trụ đá tròn đường kính 1.25m làm trụ cột nâng đỡ toàn bộ gian điện gỗ nặng hàng chục tấn.\n\nTám thanh xà gỗ lim to bản được gài chéo góc 45 độ tỏa đều như tám cánh sen đỡ lấy đài Phật. Toàn bộ trọng lực được truyền thẳng đứng xuống đáy hồ Linh Chiểu qua cơ chế khóa trọng lực tự nhiên không cần bất kỳ chiếc đinh kim loại nào.");
             b2.setMediaUrl("/images/chua-mot-cot.webp");
-            b2.setMediaCaption("Chi tiết xà nách mộng gỗ và chân đài sen nâng đỡ chính điện Chùa Một Cột");
+            b2.setMediaCaption("Chi tiết xà nách và chân đài sen nâng đỡ chính điện Chùa Một Cột");
             b2.setDisplayOrder(2);
             b2.setStatus("published");
 
@@ -285,22 +285,12 @@ public class DataInitializer implements ApplicationRunner {
             b4.setDisplayOrder(4);
             b4.setStatus("published");
 
-            StoryBlockEntity b5 = new StoryBlockEntity();
-            b5.setId("b-5");
-            b5.setProductId("prod-1");
-            b5.setType("assembly");
-            b5.setTitle("Kỹ Thuật Khớp Mộng Gỗ 4 Bước Tinh Tế");
-            b5.setContent("Khám phá cách thức 24 chi tiết in 3D của mô hình Chùa Một Cột kết nối ăn khớp tuyệt đối theo phương pháp mộc bản truyền thống.");
-            b5.setAssemblyStepsJson("[" +
-                    "{\"step\":1,\"title\":\"Gia Cố Trụ Đơn & Bệ Đá\",\"nameVi\":\"Cột trụ đá & Chân tảng hoa sen\",\"description\":\"Khối đế vững chãi mô phỏng chân tảng hoa sen nguyên khối. Cột trụ được in 3D rỗng vi hạt để tạo trọng tâm hoàn hảo tại đáy hồ Linh Chiểu.\",\"detail\":\"Khớp mộng số 01: Mộng âm tròn định tâm chống xoay lệch.\",\"highlight\":\"Trụ đá nguyên khối vươn cao\"}," +
-                    "{\"step\":2,\"title\":\"Đan Khung Hệ Xà Nách\",\"nameVi\":\"Hệ thống xà lim đòn tay mộng gỗ âm dương\",\"description\":\"Tám cánh xà nách vươn rộng như 8 cánh sen lớn đỡ lấy tòa đài. Các thanh dầm được gài khít vào nhau theo tỷ lệ mộng cổ không dùng keo dán.\",\"detail\":\"Khớp mộng số 02 - 08: Hệ mộng én đôi khóa chéo chịu lực uốn.\",\"highlight\":\"8 xà nách vươn tỏa như đài sen\"}," +
-                    "{\"step\":3,\"title\":\"Dựng Điện Liên Hoa Đài\",\"nameVi\":\"Khung điện thờ gỗ lim vuông vắn\",\"description\":\"Tòa Phật đường nhỏ nhắn kích thước mỗi cạnh 3m. Hệ cột quân, cửa bức bàn và xà ngang được liên kết chặt chẽ vào sàn đài sen.\",\"detail\":\"Khớp mộng số 09 - 18: Mộng mang cá ghép kín 4 góc hiên.\",\"highlight\":\"Chính điện thờ tượng Quan Âm\"}," +
-                    "{\"step\":4,\"title\":\"Lợp Mái Ngói Mũi Hài & Đầu Đao\",\"nameVi\":\"Bộ 4 mái ngói đao cong thanh thoát thời Lý\",\"description\":\"Bốn góc mái ngói uốn cong nhẹ nhàng hướng lên trời cao với hình tượng lá sen và đuôi chim phượng, tái hiện nguyên vẹn kỹ nghệ đắp ngói cổ truyền.\",\"detail\":\"Khớp mộng số 19 - 24: Khóa nóc chóp nhọn hoàn thiện cấu trúc.\",\"highlight\":\"Góc đao uốn cong uyển chuyển\"}" +
-                    "]");
-            b5.setDisplayOrder(5);
-            b5.setStatus("published");
+            storyBlockRepo.saveAll(Arrays.asList(b1, b2, b3, b4));
+        }
 
-            storyBlockRepo.saveAll(Arrays.asList(b1, b2, b3, b4, b5));
+        // Tự động dọn dẹp khối b-5 nếu còn sót lại trong cơ sở dữ liệu
+        if (storyBlockRepo.existsById("b-5")) {
+            storyBlockRepo.deleteById("b-5");
         }
 
         // Seed Blogs
