@@ -1,5 +1,6 @@
 package com.viettoria.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.dao.DataAccessException;
@@ -27,10 +28,11 @@ public class HealthController {
     }
 
     @GetMapping
+    @Operation(summary = "Kiểm tra backend", description = "Endpoint công khai trả trạng thái cơ bản và thời điểm phản hồi của backend. Endpoint này không kiểm tra kết nối database.", tags = "Health")
     public ResponseEntity<Map<String, Object>> health() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "online");
-        response.put("framework", "Spring Boot 3.4.2 (Java 17)");
+        response.put("framework", "Spring Boot 3.4.13 (Java 17)");
         response.put("project", "VIETTORIA Heritage Collectibles API");
         response.put("version", "1.0.0");
         response.put("timestamp", Instant.now().toString());
@@ -38,6 +40,7 @@ public class HealthController {
     }
 
     @GetMapping("/ping")
+    @Operation(summary = "Ping backend và database", description = "Endpoint công khai dành cho cronjob/monitor bên ngoài. Mỗi lần gọi chạy SELECT 1 trên database; trả 200 khi backend và DB hoạt động, hoặc 503 khi không truy cập được DB.", tags = "Health")
     public ResponseEntity<Map<String, Object>> ping() {
         Map<String, Object> response = new HashMap<>();
         response.put("backend", "up");
