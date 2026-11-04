@@ -26,12 +26,15 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final List<String> allowedOrigins;
+    private final List<String> allowedOriginPatterns;
 
     public SecurityConfig(
             JwtAuthenticationFilter jwtAuthFilter,
-            @Value("${app.cors.allowed-origins}") String[] allowedOrigins) {
+            @Value("${app.cors.allowed-origins}") String[] allowedOrigins,
+            @Value("${app.cors.allowed-origin-patterns:}") String[] allowedOriginPatterns) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.allowedOrigins = Arrays.asList(allowedOrigins);
+        this.allowedOriginPatterns = Arrays.asList(allowedOriginPatterns);
     }
 
     @Bean
@@ -64,7 +67,9 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(allowedOrigins);
+        List<String> originPatterns = new java.util.ArrayList<>(allowedOrigins);
+        originPatterns.addAll(allowedOriginPatterns);
+        config.setAllowedOriginPatterns(originPatterns);
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With", "Origin"));
         config.setAllowCredentials(true);

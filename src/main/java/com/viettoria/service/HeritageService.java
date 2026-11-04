@@ -6,6 +6,7 @@ import com.viettoria.dto.*;
 import com.viettoria.entity.*;
 import com.viettoria.repository.*;
 import com.viettoria.security.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class HeritageService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
+    private final String adminUsername;
 
     public HeritageService(
             CollectionRepository collectionRepo,
@@ -36,7 +38,8 @@ public class HeritageService {
             AdminUserRepository adminUserRepo,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider tokenProvider,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            @Value("${app.admin.username}") String adminUsername) {
         this.collectionRepo = collectionRepo;
         this.productRepo = productRepo;
         this.storyBlockRepo = storyBlockRepo;
@@ -46,6 +49,7 @@ public class HeritageService {
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.objectMapper = objectMapper;
+        this.adminUsername = adminUsername;
     }
 
     // --- PUBLIC METHODS ---
@@ -194,7 +198,7 @@ public class HeritageService {
 
     @Transactional(readOnly = true)
     public AuthDto.LoginResponse loginDemo() {
-        String username = "demo-viewer";
+        String username = adminUsername;
         String token = tokenProvider.generateToken(username, "DEMO", 30 * 60 * 1000L);
         AuthDto.AdminUserDto userDto = new AuthDto.AdminUserDto(
                 username, username, "Khách trải nghiệm VIETTORIA", "DEMO");
