@@ -50,7 +50,12 @@ public class MediaStorageService {
             case "avif" -> "image/avif";
             case "gif" -> "image/gif";
             case "glb" -> "model/gltf-binary";
-            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Định dạng chỉ hỗ trợ JPG, PNG, WebP, AVIF, GIF và GLB.");
+            case "mp3" -> "audio/mpeg";
+            case "wav" -> "audio/wav";
+            case "m4a" -> "audio/mp4";
+            case "ogg" -> "audio/ogg";
+            case "flac" -> "audio/flac";
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Định dạng chỉ hỗ trợ JPG, PNG, WebP, AVIF, GIF, GLB, MP3, WAV, M4A, OGG và FLAC.");
         };
         validateFileSignature(file, extension);
 
@@ -64,8 +69,12 @@ public class MediaStorageService {
             try (InputStream input = file.getInputStream()) {
                 Files.copy(input, destination);
             }
-            return new StoredMedia(originalName, fileType, "/uploads/" + storedName,
-                    "glb".equals(extension) ? "raw" : "image", file.getSize());
+            String resourceType = switch (extension) {
+                case "glb" -> "raw";
+                case "mp3", "wav", "m4a", "ogg", "flac" -> "video";
+                default -> "image";
+            };
+            return new StoredMedia(originalName, fileType, "/uploads/" + storedName, resourceType, file.getSize());
         } catch (IOException exception) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Không thể lưu tệp vào backend.", exception);
         }
@@ -87,6 +96,12 @@ public class MediaStorageService {
                 case "avif" -> header.length >= 12 && asciiAt(header, 4, "ftyp")
                         && (containsAsciiAtOrAfter(header, 8, "avif") || containsAsciiAtOrAfter(header, 8, "avis"));
                 case "glb" -> startsWithAscii(header, "glTF");
+                case "mp3" -> startsWithAscii(header, "ID3") || (header.length >= 2
+                        && (header[0] & 0xff) == 0xff && (header[1] & 0xe0) == 0xe0);
+                case "wav" -> header.length >= 12 && startsWithAscii(header, "RIFF") && asciiAt(header, 8, "WAVE");
+                case "m4a" -> header.length >= 12 && asciiAt(header, 4, "ftyp");
+                case "ogg" -> startsWithAscii(header, "OggS");
+                case "flac" -> startsWithAscii(header, "fLaC");
                 default -> false;
             };
             if (!valid) {

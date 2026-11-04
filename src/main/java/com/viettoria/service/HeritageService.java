@@ -488,7 +488,8 @@ public class HeritageService {
 
         dto.setModel3dUrl(p.getModel3dUrl());
 
-        if (p.getAudioTitle() != null || p.getAudioUrl() != null) {
+        if (hasText(p.getAudioTitle()) || hasText(p.getAudioDuration()) || hasText(p.getAudioUrl())
+                || hasText(p.getAudioNarrator()) || hasText(p.getAudioTranscript())) {
             AudioGuideDto audio = new AudioGuideDto(
                     p.getAudioTitle(), p.getAudioDuration(), p.getAudioUrl(), p.getAudioNarrator(), p.getAudioTranscript()
             );
@@ -499,6 +500,10 @@ public class HeritageService {
         dto.setStatus(p.getStatus());
         dto.setIsHeroRelease(p.isHeroRelease());
         return dto;
+    }
+
+    private boolean hasText(String value) {
+        return value != null && !value.isBlank();
     }
 
     private void updateProductEntityFromDto(ProductEntity entity, ProductDto dto) {
@@ -541,7 +546,7 @@ public class HeritageService {
             if (a.getTranscript() != null) entity.setAudioTranscript(a.getTranscript());
         }
 
-        entity.setDisplayOrder(dto.getDisplayOrder());
+        if (dto.getDisplayOrder() != null) entity.setDisplayOrder(dto.getDisplayOrder());
         if (dto.getStatus() != null) entity.setStatus(dto.getStatus());
         if (dto.getIsHeroRelease() != null) entity.setHeroRelease(dto.getIsHeroRelease());
     }

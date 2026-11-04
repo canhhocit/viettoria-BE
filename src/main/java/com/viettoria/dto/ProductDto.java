@@ -19,7 +19,7 @@ public class ProductDto {
     private List<String> galleryImages;
     private String model3dUrl;
     private AudioGuideDto audioGuide;
-    private int displayOrder;
+    private Integer displayOrder;
     private String status;
     private Boolean isHeroRelease;
     private CollectionDto collection;
@@ -71,8 +71,8 @@ public class ProductDto {
     public AudioGuideDto getAudioGuide() { return audioGuide; }
     public void setAudioGuide(AudioGuideDto audioGuide) { this.audioGuide = audioGuide; }
 
-    public int getDisplayOrder() { return displayOrder; }
-    public void setDisplayOrder(int displayOrder) { this.displayOrder = displayOrder; }
+    public Integer getDisplayOrder() { return displayOrder; }
+    public void setDisplayOrder(Integer displayOrder) { this.displayOrder = displayOrder; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

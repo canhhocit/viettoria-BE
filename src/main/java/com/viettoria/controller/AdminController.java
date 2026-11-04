@@ -200,7 +200,7 @@ public class AdminController {
     }
 
     @PostMapping("/media/upload-signature")
-    @Operation(summary = "Tạo chữ ký upload Cloudinary", description = "Tạo chữ ký có thời hạn để trình duyệt tải tệp trực tiếp lên Cloudinary mà không đưa API secret ra frontend. Body xác định loại tài nguyên và phần mở rộng tệp. Yêu cầu JWT admin.", tags = "Media Library")
+    @Operation(summary = "Tạo chữ ký upload Cloudinary", description = "Tạo chữ ký có thời hạn để trình duyệt tải ảnh, mô hình GLB hoặc âm thanh trực tiếp lên Cloudinary mà không đưa API secret ra frontend. Audio dùng resource type video. Yêu cầu JWT admin.", tags = "Media Library")
     public ResponseEntity<ApiResponse<CloudinaryUploadSignatureDto>> createMediaUploadSignature(
             @RequestBody CloudinaryUploadSignatureRequest request) {
         CloudinaryUploadSignatureDto signature = cloudinaryUploadService.createUploadSignature(
@@ -216,7 +216,7 @@ public class AdminController {
     }
 
     @PostMapping(value = "/media/fallback-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Upload media dự phòng lên backend", description = "Nhận multipart/form-data với file bắt buộc và name, altText tùy chọn. Dùng lưu tệp qua backend khi luồng Cloudinary không khả dụng; trả bản ghi media (HTTP 201). Yêu cầu JWT admin.", tags = "Media Library")
+    @Operation(summary = "Upload media dự phòng lên backend", description = "Nhận multipart/form-data với file bắt buộc và name, altText tùy chọn. Hỗ trợ ảnh, mô hình GLB và audio MP3/WAV/M4A/OGG/FLAC. Dùng lưu tệp qua backend khi luồng Cloudinary không khả dụng; trả bản ghi media (HTTP 201). Yêu cầu JWT admin.", tags = "Media Library")
     public ResponseEntity<ApiResponse<MediaItemDto>> uploadMediaToBackend(
             @Parameter(description = "Tệp cần tải lên", required = true) @RequestParam("file") MultipartFile file,
             @Parameter(description = "Tên hiển thị tùy chọn") @RequestParam(value = "name", required = false) String name,

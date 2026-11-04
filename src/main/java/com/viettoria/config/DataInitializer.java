@@ -117,7 +117,7 @@ public class DataInitializer implements ApplicationRunner {
             p1.setGalleryImagesJson("[\"/images/chua-mot-cot.webp\", \"/images/van-mieu-quoc-tu-giam.webp\", \"/images/hoang-thanh-thang-long.webp\"]");
             p1.setAudioTitle("Âm Vang Diên Hựu — Đóa Sen Ngàn Năm");
             p1.setAudioDuration("04:35");
-            p1.setAudioUrl("/audio/chua-mot-cot.mp3");
+            p1.setAudioUrl("");
             p1.setAudioNarrator("Ban Cố Vấn Lịch Sử Viettoria");
             p1.setAudioTranscript("Chùa Một Cột, tên chữ là Diên Hựu Tự, khởi dựng vào mùa đông năm Kỷ Sửu (1049) dưới triều vua Lý Thái Tông.\n\nTheo truyền thuyết Đại Việt Sử Ký Toàn Thư, vua chiêm bao thấy Phật Bà Quan Âm ngồi trên tòa sen dắt vua lên đài. Khi tỉnh dậy, vua đem việc ấy hỏi quần thần, nhà sư Thiền Tuệ khuyên dựng chùa như hình đài sen trên cột đá.\n\nĐiểm độc đáo vô song của Chùa Một Cột nằm ở kiến trúc một cột đá duy nhất chịu lực toàn bộ tòa điện gỗ vuông vắn bên trên. Hệ thống xà nách 8 cánh vươn ra đỡ lấy sàn chùa, mô phỏng đóa sen nở rộ giữa lòng hồ Linh Chiểu. Toàn bộ cấu trúc được lắp ráp tinh vi bằng các khớp mộng gỗ âm dương, thể hiện đỉnh cao tài hoa mộc bản của người thợ Đại Việt.");
             p1.setDisplayOrder(1);
@@ -146,7 +146,7 @@ public class DataInitializer implements ApplicationRunner {
             p2.setGalleryImagesJson("[\"/images/van-mieu-quoc-tu-giam.webp\", \"/images/hoang-thanh-thang-long.webp\"]");
             p2.setAudioTitle("Sao Khuê Tỏa Sáng — Đất Học Thăng Long");
             p2.setAudioDuration("03:50");
-            p2.setAudioUrl("/audio/khue-van-cac.mp3");
+            p2.setAudioUrl("");
             p2.setAudioNarrator("Ban Cố Vấn Văn Hóa");
             p2.setAudioTranscript("Khuê Văn Các được xây dựng năm 1805 dưới thời vua Gia Long, do Tổng trấn Bắc thành Nguyễn Văn Thành chủ trì hưng công.\n\nGác Khuê Văn gồm hai tầng: tầng dưới là 4 trụ gạch vồ vuông vắn vững chãi tượng trưng cho Đất, tầng trên là lầu gỗ với các cửa sổ tròn tỏa tia sáng tượng trưng cho Trời và vì sao Khuê chủ về văn chương.");
             p2.setDisplayOrder(2);
@@ -175,7 +175,7 @@ public class DataInitializer implements ApplicationRunner {
             p3.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
             p3.setAudioTitle("Ngọn Cờ Độc Lập Giữa Lòng Thăng Long");
             p3.setAudioDuration("03:20");
-            p3.setAudioUrl("/audio/cot-co-ha-noi.mp3");
+            p3.setAudioUrl("");
             p3.setAudioNarrator("Ban Cố Vấn Văn Hóa");
             p3.setAudioTranscript("Cột cờ Hà Nội hay Kỳ đài Hà Nội là di tích lịch sử đặc biệt nằm trong khuôn viên Bảo tàng Lịch sử Quân sự Việt Nam. Được xây dựng năm 1812, đây là một trong số ít công trình nguyên vẹn của Hoàng thành Thăng Long sau sự tàn phá của thực dân Pháp.");
             p3.setDisplayOrder(3);
@@ -204,7 +204,7 @@ public class DataInitializer implements ApplicationRunner {
             p4.setGalleryImagesJson("[\"/images/thua-thien-hue.webp\", \"/images/lang-vua-tu-duc.webp\"]");
             p4.setAudioTitle("Dấu Ấn Cung Đình Trên Lầu Ngũ Phụng");
             p4.setAudioDuration("04:10");
-            p4.setAudioUrl("/audio/ngo-mon-hue.mp3");
+            p4.setAudioUrl("");
             p4.setAudioNarrator("Ban Cố Vấn Lịch Sử");
             p4.setAudioTranscript("Ngọ Môn là cổng chính phía nam của Hoàng thành Huế, được xây dựng năm Minh Mạng thứ 14 (1833). Phía trên là lầu Ngũ Phụng với kết cấu gỗ lim tinh xảo, nơi diễn ra các lễ truyền lô công bố danh sách tiến sĩ và lễ thoái vị của vua Bảo Đại năm 1945.");
             p4.setDisplayOrder(4);
@@ -233,7 +233,7 @@ public class DataInitializer implements ApplicationRunner {
             p5.setGalleryImagesJson("[\"/images/dinh-doc-lap.webp\"]");
             p5.setAudioTitle("Khởi Đầu Hành Trình Cứu Nước 1911");
             p5.setAudioDuration("03:45");
-            p5.setAudioUrl("/audio/ben-nha-rong.mp3");
+            p5.setAudioUrl("");
             p5.setAudioNarrator("Ban Cố Vấn Văn Hóa");
             p5.setAudioTranscript("Bến Nhà Rồng khởi công xây dựng năm 1863 làm trụ sở cho hãng vận tải Messageries Maritimes. Tòa nhà mang dấu ấn kiến trúc phương Tây pha trộn hoa văn rồng Á Đông đặc trưng trên đỉnh mái.");
             p5.setDisplayOrder(5);

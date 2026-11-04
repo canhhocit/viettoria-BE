@@ -11,6 +11,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.HexFormat;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -35,14 +36,21 @@ public class CloudinaryUploadService {
     public CloudinaryUploadSignatureDto createUploadSignature(String resourceType, String fileExtension) {
         ensureConfigured();
 
-        if (!"image".equals(resourceType) && !"raw".equals(resourceType)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Chỉ hỗ trợ tải ảnh hoặc mô hình 3D GLB.");
+        if (!"image".equals(resourceType) && !"raw".equals(resourceType) && !"video".equals(resourceType)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Loại tệp chỉ hỗ trợ ảnh, mô hình GLB hoặc âm thanh.");
         }
         if ("raw".equals(resourceType) && !"glb".equalsIgnoreCase(fileExtension)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hiện chỉ hỗ trợ mô hình 3D định dạng GLB.");
         }
+        if ("video".equals(resourceType) && !isSupportedAudioExtension(fileExtension)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Âm thanh chỉ hỗ trợ MP3, WAV, M4A, OGG hoặc FLAC.");
+        }
 
-        String folder = "image".equals(resourceType) ? "viettoria/images" : "viettoria/3d";
+        String folder = switch (resourceType) {
+            case "image" -> "viettoria/images";
+            case "raw" -> "viettoria/3d";
+            default -> "viettoria/audio";
+        };
         String publicId = UUID.randomUUID().toString();
         if ("raw".equals(resourceType)) {
             // Cloudinary raw asset public IDs include the file extension.
@@ -72,7 +80,7 @@ public class CloudinaryUploadService {
 
     public void validateUploadedMedia(String url, String resourceType, String publicId) {
         ensureConfigured();
-        if (!"image".equals(resourceType) && !"raw".equals(resourceType)) {
+        if (!"image".equals(resourceType) && !"raw".equals(resourceType) && !"video".equals(resourceType)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Loại tài nguyên Cloudinary không hợp lệ.");
         }
         String expectedPrefix = "https://res.cloudinary.com/" + cloudName + "/" + resourceType + "/upload/";
@@ -86,5 +94,13 @@ public class CloudinaryUploadService {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
                     "Cloudinary chưa được cấu hình. Hãy thiết lập CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY và CLOUDINARY_API_SECRET ở backend.");
         }
+    }
+
+    private boolean isSupportedAudioExtension(String fileExtension) {
+        if (fileExtension == null) return false;
+        return switch (fileExtension.toLowerCase(Locale.ROOT)) {
+            case "mp3", "wav", "m4a", "ogg", "flac" -> true;
+            default -> false;
+        };
     }
 }
