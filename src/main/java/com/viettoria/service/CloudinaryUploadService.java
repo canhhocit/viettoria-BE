@@ -7,8 +7,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.Locale;
@@ -87,6 +93,60 @@ public class CloudinaryUploadService {
         if (url == null || !url.startsWith(expectedPrefix) || publicId == null || publicId.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tệp phải được tải lên Cloudinary của VIETTORIA trước khi lưu.");
         }
+    }
+
+    public void deleteUploadedMedia(String publicId, String resourceType) {
+        ensureConfigured();
+        if (publicId == null || publicId.isBlank()
+                || (!"image".equals(resourceType) && !"raw".equals(resourceType) && !"video".equals(resourceType))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Thông tin tệp Cloudinary không hợp lệ.");
+        }
+
+        long timestamp = Instant.now().getEpochSecond();
+        String stringToSign = "public_id=" + publicId + "&timestamp=" + timestamp;
+        String signature = sign(stringToSign);
+        String body = formValue("public_id", publicId)
+                + "&" + formValue("timestamp", Long.toString(timestamp))
+                + "&" + formValue("api_key", apiKey)
+                + "&" + formValue("signature", signature);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.cloudinary.com/v1_1/" + cloudName + "/" + resourceType + "/destroy"))
+                .timeout(Duration.ofSeconds(25))
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+        try {
+            HttpResponse<String> response = HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(10))
+                    .build()
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+            String responseBody = response.body() == null ? "" : response.body();
+            boolean removedOrMissing = responseBody.matches("(?s).*\\\"result\\\"\\s*:\\s*\\\"(ok|not found)\\\".*");
+            if (response.statusCode() < 200 || response.statusCode() >= 300 || !removedOrMissing) {
+                throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Cloudinary không thể xóa tệp này.");
+            }
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, "Yêu cầu xóa Cloudinary bị gián đoạn.", exception);
+        } catch (java.io.IOException | IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Không kết nối được Cloudinary để xóa tệp.", exception);
+        }
+    }
+
+    private String sign(String stringToSign) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            byte[] hash = digest.digest((stringToSign + apiSecret).getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        } catch (NoSuchAlgorithmException exception) {
+            throw new IllegalStateException("Không thể ký yêu cầu xóa Cloudinary.", exception);
+        }
+    }
+
+    private String formValue(String key, String value) {
+        return URLEncoder.encode(key, StandardCharsets.UTF_8) + "="
+                + URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
     private void ensureConfigured() {

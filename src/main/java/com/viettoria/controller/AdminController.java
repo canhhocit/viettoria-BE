@@ -199,6 +199,19 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok(heritageService.adminGetMedia()));
     }
 
+    @DeleteMapping("/media/{id}")
+    @Operation(summary = "Xóa tệp khỏi thư viện media", description = "Xóa tệp Cloudinary hoặc bản upload backend cùng bản ghi thư viện. Từ chối nếu tệp vẫn đang được nội dung sử dụng. Yêu cầu JWT admin.", tags = "Media Library")
+    public ResponseEntity<ApiResponse<Void>> deleteMedia(@Parameter(description = "ID bản ghi media") @PathVariable String id) {
+        MediaItemDto media = heritageService.adminGetMediaForDelete(id);
+        if (media.getUrl() != null && media.getUrl().startsWith("https://res.cloudinary.com/")) {
+            cloudinaryUploadService.deleteUploadedMedia(media.getPublicId(), media.getResourceType());
+        } else if (media.getUrl() != null && media.getUrl().startsWith("/uploads/")) {
+            mediaStorageService.deleteStoredMedia(media.getUrl());
+        }
+        heritageService.adminDeleteMedia(id);
+        return ResponseEntity.ok(ApiResponse.ok(null, "Đã xóa tệp khỏi thư viện."));
+    }
+
     @PostMapping("/media/upload-signature")
     @Operation(summary = "Tạo chữ ký upload Cloudinary", description = "Tạo chữ ký có thời hạn để trình duyệt tải ảnh, mô hình GLB hoặc âm thanh trực tiếp lên Cloudinary mà không đưa API secret ra frontend. Audio dùng resource type video. Yêu cầu JWT admin.", tags = "Media Library")
     public ResponseEntity<ApiResponse<CloudinaryUploadSignatureDto>> createMediaUploadSignature(

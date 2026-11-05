@@ -84,6 +84,25 @@ public class MediaStorageService {
         return uploadDirectory;
     }
 
+    public void deleteStoredMedia(String mediaUrl) {
+        if (mediaUrl == null || !mediaUrl.startsWith("/uploads/")) {
+            return;
+        }
+        String fileName = mediaUrl.substring("/uploads/".length());
+        if (fileName.isBlank() || fileName.contains("/") || fileName.contains("\\")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đường dẫn tệp backend không hợp lệ.");
+        }
+        Path file = uploadDirectory.resolve(fileName).normalize();
+        if (!file.startsWith(uploadDirectory)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Đường dẫn tệp backend không hợp lệ.");
+        }
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException exception) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Không thể xóa tệp khỏi backend.", exception);
+        }
+    }
+
     private void validateFileSignature(MultipartFile file, String extension) {
         try (InputStream input = file.getInputStream()) {
             byte[] header = input.readNBytes(16);

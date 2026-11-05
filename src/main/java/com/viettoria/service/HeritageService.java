@@ -444,6 +444,52 @@ public class HeritageService {
         return mapMediaToDto(mediaItemRepo.save(entity));
     }
 
+    @Transactional(readOnly = true)
+    public MediaItemDto adminGetMediaForDelete(String id) {
+        MediaItemEntity media = mediaItemRepo.findById(id).orElseThrow(() ->
+                new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Không tìm thấy tệp trong thư viện."));
+        ensureMediaIsUnused(media);
+        return mapMediaToDto(media);
+    }
+
+    @Transactional
+    public void adminDeleteMedia(String id) {
+        MediaItemEntity media = mediaItemRepo.findById(id).orElseThrow(() ->
+                new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Không tìm thấy tệp trong thư viện."));
+        ensureMediaIsUnused(media);
+        mediaItemRepo.delete(media);
+    }
+
+    private void ensureMediaIsUnused(MediaItemEntity media) {
+        boolean referencedByProduct = productRepo.findAll().stream().anyMatch(product ->
+                referencesMedia(product.getHeroImage(), media)
+                        || referencesMedia(product.getGalleryImagesJson(), media)
+                        || referencesMedia(product.getModel3dUrl(), media)
+                        || referencesMedia(product.getAudioUrl(), media));
+        boolean referencedByCollection = collectionRepo.findAll().stream()
+                .anyMatch(collection -> referencesMedia(collection.getHeroImage(), media));
+        boolean referencedByBlog = blogPostRepo.findAll().stream()
+                .anyMatch(blog -> referencesMedia(blog.getCoverImage(), media));
+        boolean referencedByStory = storyBlockRepo.findAll().stream().anyMatch(story ->
+                referencesMedia(story.getMediaUrl(), media)
+                        || referencesMedia(story.getTimelineItemsJson(), media)
+                        || referencesMedia(story.getAssemblyStepsJson(), media));
+
+        if (referencedByProduct || referencedByCollection || referencedByBlog || referencedByStory) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.CONFLICT,
+                    "Tệp đang được sử dụng. Hãy gỡ khỏi nội dung trước khi xóa.");
+        }
+    }
+
+    private boolean referencesMedia(String content, MediaItemEntity media) {
+        if (content == null || content.isBlank()) return false;
+        return (media.getUrl() != null && !media.getUrl().isBlank() && content.contains(media.getUrl()))
+                || (media.getPublicId() != null && !media.getPublicId().isBlank() && content.contains(media.getPublicId()));
+    }
+
     // --- MAPPERS ---
 
     private CollectionDto mapCollectionToDto(CollectionEntity c) {
