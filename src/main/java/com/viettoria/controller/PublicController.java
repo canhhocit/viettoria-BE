@@ -1,6 +1,7 @@
 package com.viettoria.controller;
 
 import com.viettoria.dto.*;
+import com.viettoria.service.ContentLocalizationService;
 import com.viettoria.service.HeritageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,27 +16,39 @@ import java.util.Map;
 public class PublicController {
 
     private final HeritageService heritageService;
+    private final ContentLocalizationService localizationService;
 
-    public PublicController(HeritageService heritageService) {
+    public PublicController(HeritageService heritageService, ContentLocalizationService localizationService) {
         this.heritageService = heritageService;
+        this.localizationService = localizationService;
     }
 
     @GetMapping("/featured")
     @Operation(summary = "Nội dung nổi bật trang chủ", description = "Lấy dữ liệu nổi bật hiện được cấu hình để dựng trang chủ website; chỉ dành cho nội dung công khai.", tags = "Featured Content")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getFeatured() {
-        return ResponseEntity.ok(ApiResponse.ok(heritageService.getFeatured()));
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getFeatured(
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        return ResponseEntity.ok(ApiResponse.ok(heritageService.getFeatured(lang)));
     }
 
     @GetMapping("/collections")
     @Operation(summary = "Danh sách bộ sưu tập đã công bố", description = "Trả về các bộ sưu tập được phép hiển thị trên website; bộ sưu tập chưa công bố không xuất hiện.", tags = "Collections")
-    public ResponseEntity<ApiResponse<List<CollectionDto>>> getCollections() {
-        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedCollections()));
+    public ResponseEntity<ApiResponse<List<CollectionDto>>> getCollections(
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedCollections(lang)));
     }
 
     @GetMapping("/collections/{slug}")
     @Operation(summary = "Chi tiết bộ sưu tập theo slug", description = "Tìm bộ sưu tập công khai theo slug trên URL. Trả 404 nếu không tìm thấy hoặc không được công khai.", tags = "Collections")
-    public ResponseEntity<ApiResponse<CollectionDto>> getCollectionBySlug(@Parameter(description = "Slug thân thiện với URL của bộ sưu tập", example = "kien-truc-thoi-ly") @PathVariable String slug) {
-        CollectionDto dto = heritageService.getCollectionBySlug(slug);
+    public ResponseEntity<ApiResponse<CollectionDto>> getCollectionBySlug(
+            @Parameter(description = "Slug thân thiện với URL của bộ sưu tập", example = "kien-truc-thoi-ly") @PathVariable String slug,
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        CollectionDto dto = heritageService.getCollectionBySlug(slug, lang);
         if (dto == null) {
             return ResponseEntity.status(404).body(ApiResponse.error("Không tìm thấy bộ sưu tập"));
         }
@@ -46,14 +59,21 @@ public class PublicController {
     @Operation(summary = "Danh sách tác phẩm đã công bố", description = "Lấy tác phẩm công khai; có thể lọc theo collectionId và tìm kiếm theo nội dung. Bỏ trống query để lấy danh sách mặc định.", tags = "Products")
     public ResponseEntity<ApiResponse<List<ProductDto>>> getProducts(
             @Parameter(description = "ID bộ sưu tập cần lọc") @RequestParam(required = false) String collectionId,
-            @Parameter(description = "Từ khóa tìm kiếm") @RequestParam(required = false) String search) {
-        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedProducts(collectionId, search)));
+            @Parameter(description = "Từ khóa tìm kiếm") @RequestParam(required = false) String search,
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedProducts(collectionId, search, lang)));
     }
 
     @GetMapping("/products/{slugOrCode}")
     @Operation(summary = "Chi tiết tác phẩm theo slug hoặc mã", description = "Tra cứu tác phẩm công khai bằng slug hoặc mã tác phẩm. Trả 404 nếu không có tác phẩm tương ứng.", tags = "Products")
-    public ResponseEntity<ApiResponse<ProductDto>> getProductBySlugOrCode(@Parameter(description = "Slug hoặc mã định danh tác phẩm", example = "VT-HN-001") @PathVariable String slugOrCode) {
-        ProductDto dto = heritageService.getProductBySlugOrCode(slugOrCode);
+    public ResponseEntity<ApiResponse<ProductDto>> getProductBySlugOrCode(
+            @Parameter(description = "Slug hoặc mã định danh tác phẩm", example = "VT-HN-001") @PathVariable String slugOrCode,
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        ProductDto dto = heritageService.getProductBySlugOrCode(slugOrCode, lang);
         if (dto == null) {
             return ResponseEntity.status(404).body(ApiResponse.error("Không tìm thấy tác phẩm di sản"));
         }
@@ -75,14 +95,21 @@ public class PublicController {
 
     @GetMapping("/blogs")
     @Operation(summary = "Danh sách bài viết đã xuất bản", description = "Lấy các bài viết khảo cứu đang công khai trên website.", tags = "Editorial")
-    public ResponseEntity<ApiResponse<List<BlogPostDto>>> getBlogs() {
-        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedBlogs()));
+    public ResponseEntity<ApiResponse<List<BlogPostDto>>> getBlogs(
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        return ResponseEntity.ok(ApiResponse.ok(heritageService.getPublishedBlogs(lang)));
     }
 
     @GetMapping("/blogs/{slug}")
     @Operation(summary = "Chi tiết bài viết theo slug", description = "Tìm bài viết khảo cứu đã xuất bản bằng slug. Trả 404 nếu không tìm thấy hoặc chưa được công khai.", tags = "Editorial")
-    public ResponseEntity<ApiResponse<BlogPostDto>> getBlogBySlug(@Parameter(description = "Slug thân thiện với URL của bài viết", example = "dau-an-kien-truc-thoi-ly") @PathVariable String slug) {
-        BlogPostDto dto = heritageService.getBlogBySlug(slug);
+    public ResponseEntity<ApiResponse<BlogPostDto>> getBlogBySlug(
+            @Parameter(description = "Slug thân thiện với URL của bài viết", example = "dau-an-kien-truc-thoi-ly") @PathVariable String slug,
+            @RequestHeader(value = "Accept-Language", required = false) String acceptLanguage,
+            @RequestParam(value = "lang", required = false) String langParam) {
+        String lang = localizationService.resolveLanguage(langParam, acceptLanguage);
+        BlogPostDto dto = heritageService.getBlogBySlug(slug, lang);
         if (dto == null) {
             return ResponseEntity.status(404).body(ApiResponse.error("Không tìm thấy bài viết khảo cứu"));
         }

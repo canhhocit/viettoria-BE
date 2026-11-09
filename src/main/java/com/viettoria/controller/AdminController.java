@@ -1,7 +1,10 @@
 package com.viettoria.controller;
 
 import com.viettoria.dto.*;
+import com.viettoria.repository.ContentTranslationRepository;
 import com.viettoria.service.CloudinaryUploadService;
+import com.viettoria.service.ContentLocalizationService;
+import com.viettoria.service.GeminiTranslationService;
 import com.viettoria.service.HeritageService;
 import com.viettoria.service.MediaStorageService;
 import com.viettoria.service.MediaStorageService.StoredMedia;
@@ -13,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,16 +27,25 @@ public class AdminController {
     private final HeritageService heritageService;
     private final CloudinaryUploadService cloudinaryUploadService;
     private final MediaStorageService mediaStorageService;
+    private final ContentLocalizationService localizationService;
+    private final GeminiTranslationService geminiService;
+    private final ContentTranslationRepository translationRepo;
     private final boolean demoLoginEnabled;
 
     public AdminController(
             HeritageService heritageService,
             CloudinaryUploadService cloudinaryUploadService,
             MediaStorageService mediaStorageService,
+            ContentLocalizationService localizationService,
+            GeminiTranslationService geminiService,
+            ContentTranslationRepository translationRepo,
             @Value("${DEMO_LOGIN_ENABLED:true}") boolean demoLoginEnabled) {
         this.heritageService = heritageService;
         this.cloudinaryUploadService = cloudinaryUploadService;
         this.mediaStorageService = mediaStorageService;
+        this.localizationService = localizationService;
+        this.geminiService = geminiService;
+        this.translationRepo = translationRepo;
         this.demoLoginEnabled = demoLoginEnabled;
     }
 
@@ -245,5 +258,30 @@ public class AdminController {
         dto.setResourceType(stored.resourceType());
         dto.setAltText(altText);
         return ResponseEntity.status(201).body(ApiResponse.ok(heritageService.adminCreateMedia(dto), "Cloudinary chưa khả dụng; tệp đã được lưu trên backend."));
+    }
+
+    // --- TRANSLATION AUTOMATION ---
+    @GetMapping("/translations/status")
+    @Operation(summary = "Kiểm tra trạng thái hệ thống dịch AI", description = "Kiểm tra Gemini API có sẵn sàng hay không và số lượng bản dịch đã lưu trong DB.", tags = "Translations")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getTranslationStatus() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("geminiConfigured", geminiService.isConfigured());
+        status.put("supportedLanguages", ContentLocalizationService.SUPPORTED_LANGUAGES);
+        status.put("totalCachedTranslations", translationRepo.count());
+        return ResponseEntity.ok(ApiResponse.ok(status));
+    }
+
+    @PostMapping("/translations/blog/{id}")
+    @Operation(summary = "Kích hoạt dịch AI cho bài viết", description = "Dịch bài viết sang 5 ngôn ngữ (EN, FR, ZH, KO, JA) bằng Gemini và lưu vào DB.", tags = "Translations")
+    public ResponseEntity<ApiResponse<String>> triggerBlogTranslation(@PathVariable String id) {
+        BlogPostDto blog = heritageService.getBlogBySlug(id, "vi");
+        if (blog == null) {
+            blog = heritageService.adminGetBlogs().stream().filter(b -> b.getId().equals(id)).findFirst().orElse(null);
+        }
+        if (blog == null) {
+            return ResponseEntity.status(404).body(ApiResponse.error("Không tìm thấy bài viết"));
+        }
+        localizationService.autoTranslateBlogAsync(blog);
+        return ResponseEntity.ok(ApiResponse.ok("Đã khởi động tiến trình dịch tự động cho bài viết: " + blog.getTitle()));
     }
 }

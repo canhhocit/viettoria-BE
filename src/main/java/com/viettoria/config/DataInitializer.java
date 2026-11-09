@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
@@ -19,6 +20,7 @@ public class DataInitializer implements ApplicationRunner {
     private final BlogPostRepository blogPostRepo;
     private final MediaItemRepository mediaItemRepo;
     private final AdminUserRepository adminUserRepo;
+    private final ContentTranslationRepository translationRepo;
     private final PasswordEncoder passwordEncoder;
     private final String adminUsername;
     private final String adminPassword;
@@ -30,6 +32,7 @@ public class DataInitializer implements ApplicationRunner {
             BlogPostRepository blogPostRepo,
             MediaItemRepository mediaItemRepo,
             AdminUserRepository adminUserRepo,
+            ContentTranslationRepository translationRepo,
             PasswordEncoder passwordEncoder,
             @Value("${app.admin.username}") String adminUsername,
             @Value("${app.admin.password}") String adminPassword) {
@@ -39,6 +42,7 @@ public class DataInitializer implements ApplicationRunner {
         this.blogPostRepo = blogPostRepo;
         this.mediaItemRepo = mediaItemRepo;
         this.adminUserRepo = adminUserRepo;
+        this.translationRepo = translationRepo;
         this.passwordEncoder = passwordEncoder;
         this.adminUsername = adminUsername;
         this.adminPassword = adminPassword;
@@ -377,6 +381,89 @@ public class DataInitializer implements ApplicationRunner {
 
             mediaItemRepo.saveAll(Arrays.asList(m1, m2, m3, m4));
         }
+
+        // Seed Initial Content Translations (EN, FR, ZH, KO, JA)
+        seedContentTranslations();
+    }
+
+    private void seedContentTranslations() {
+        if (translationRepo.count() > 0) return;
+
+        List<ContentTranslationEntity> list = Arrays.asList(
+            // Collection 1 (col-1)
+            new ContentTranslationEntity("collection", "col-1", "en",
+                "{\"name\":\"Imprints of Thang Long Imperial Citadel\",\"description\":\"A thousand-year journey through the venerable capital of Thang Long, converging the quintessence of royal court architecture and Dai Viet Buddhist philosophy.\"}"),
+            new ContentTranslationEntity("collection", "col-1", "fr",
+                "{\"name\":\"Empreintes de la Cité Impériale de Thang Long\",\"description\":\"Un voyage millénaire à travers l'ancienne capitale de Thang Long, berceau de l'architecture royale et de la spiritualité bouddhique du Dai Viet.\"}"),
+            new ContentTranslationEntity("collection", "col-1", "zh",
+                "{\"name\":\"升龙皇城印记\",\"description\":\"千年古都升龙的历史华章，汇聚大越皇家宫殿建筑的尊严与东方佛教哲学的深邃意境。\"}"),
+            new ContentTranslationEntity("collection", "col-1", "ko",
+                "{\"name\":\"탕롱 황성의 발자취\",\"description\":\"천년 고도 탕롱의 유구한 역사 여정, 왕실 궁궐 건축의 웅장함과 대월 불교 철학의 정수가 조화를 이룹니다.\"}"),
+            new ContentTranslationEntity("collection", "col-1", "ja",
+                "{\"name\":\"タンロン皇城の足跡\",\"description\":\"千年の歴史を誇る古都タンロンの遺産。宮廷建築の美と大越仏教の哲学が響き合います。\"}"),
+
+            // Collection 2 (col-2)
+            new ContentTranslationEntity("collection", "col-2", "en",
+                "{\"name\":\"Complex of Hue Monuments\",\"description\":\"A masterpiece of Nguyen Dynasty imperial architecture, radiating serene dignity along the gentle banks of the Perfume River.\"}"),
+            new ContentTranslationEntity("collection", "col-2", "fr",
+                "{\"name\":\"Ensemble de Monuments de Hué\",\"description\":\"Chef-d'œuvre de l'architecture impériale des Nguyen, dressant son élégance solennelle le long des rives paisibles de la Rivière des Parfums.\"}"),
+            new ContentTranslationEntity("collection", "col-2", "zh",
+                "{\"name\":\"顺化古都遗迹群\",\"description\":\"阮朝皇室建筑的至高杰作，在静谧优雅的香江之畔展现庄严肃穆的帝王之美。\"}"),
+            new ContentTranslationEntity("collection", "col-2", "ko",
+                "{\"name\":\"후에 고도 유적군\",\"description\":\"응우옌 왕조 궁중 건축의 걸작으로, 유유히 흐르는 향강 기슭에 고요하고 위엄 있는 자태를 드러냅니다.\"}"),
+            new ContentTranslationEntity("collection", "col-2", "ja",
+                "{\"name\":\"フエの建造物群\",\"description\":\"グエン朝宮廷建築の最高傑作。香河（フォーン川）の畔に佇む、静寂と気品に満ちた王朝美。\"}"),
+
+            // Collection 3 (col-3)
+            new ContentTranslationEntity("collection", "col-3", "en",
+                "{\"name\":\"Imprints of Saigon - Gia Dinh\",\"description\":\"The crossroads of Indochinese architectural elegance, standing as enduring testament to monumental milestones in the nation's history.\"}"),
+            new ContentTranslationEntity("collection", "col-3", "fr",
+                "{\"name\":\"Empreintes de Saigon - Gia Dinh\",\"description\":\"Le carrefour de l'architecture indochinoise, témoin intemporel des tournants majeurs de l'histoire moderne de la nation.\"}"),
+            new ContentTranslationEntity("collection", "col-3", "zh",
+                "{\"name\":\"西贡 - 嘉定印记\",\"description\":\"印度支那古典建筑风格交融之地，见证民族伟大历史步伐与时代风云变迁。\"}"),
+            new ContentTranslationEntity("collection", "col-3", "ko",
+                "{\"name\":\"사이공 - 자딘의 발자취\",\"description\":\"인도차이나 건축 양식이 조화를 이루는 곳으로, 민족의 위대한 역사적 순간들을 간직한 역사의 산실입니다.\"}"),
+            new ContentTranslationEntity("collection", "col-3", "ja",
+                "{\"name\":\"サイゴン・ザーディンの足跡\",\"description\":\"インドシナ様式が優美に交錯する地。歴史の激動と偉大な歩みを刻む不朽の証人。\"}"),
+
+            // Blog 1 (blog-1)
+            new ContentTranslationEntity("blog", "blog-1", "en",
+                "{\"title\":\"The Secret of Mortise and Tenon Joints in Traditional Vietnamese Architecture\",\"excerpt\":\"The ancient craft of interlocking columns and beams without glue or iron nails, revealing the enduring resilience across centuries.\",\"content\":\"Traditional Vietnamese architecture is founded upon an ingenious timber frame load-bearing system. All structural components—from pillars and tie-beams to rafters—are interlocked using exquisitely carved mortise-and-tenon joints.\\n\\nAncient master carpenters believed that a wooden sanctuary resembles the living human anatomy: the joints are flexible bones, allowing the sacred edifice to gently expand, deflect, and breathe under violent typhoons and earth tremors without ever collapsing.\",\"category\":\"Architectural Research\",\"readTime\":\"5 min read\"}"),
+            new ContentTranslationEntity("blog", "blog-1", "fr",
+                "{\"title\":\"Le secret des assemblages à tenon et mortaise dans l'architecture traditionnelle vietnamienne\",\"excerpt\":\"L'art d'assembler piliers et poutres sans colle ni clou, gage d'une résilience millénaire à travers les âges.\",\"content\":\"L'architecture vietnamienne traditionnelle repose sur une charpente en bois d'une ingéniosité remarquable. Tous les éléments structurels s'articulent par tenons et mortaises savamment taillés.\\n\\nPour les maîtres charpentiers d'antan, l'édifice est à l'image du corps humain : les articulations souples permettent au sanctuaire de respirer et d'absorber tempêtes et secousses sans jamais céder.\",\"category\":\"Recherche Architecturale\",\"readTime\":\"5 min de lecture\"}"),
+            new ContentTranslationEntity("blog", "blog-1", "zh",
+                "{\"title\":\"越南传统古建筑中的木榫卯秘奥\",\"excerpt\":\"不费一滴胶水、不用一颗铁钉的梁柱契合艺术，历经千年风雨依然柔韧屹立的营造智慧。\",\"content\":\"越南传统建筑依托精湛的木结构承重体系。立柱、大梁、挑檐与斗拱皆通过严丝合缝的榫卯关节相互咬合。\\n\\n古时巧匠视房屋如人体，榫卯犹如柔韧之骨节，使殿堂能在地动风暴中微曲化力、自相调适而不倾覆。\",\"category\":\"建筑考究\",\"readTime\":\"5分钟阅读\"}"),
+            new ContentTranslationEntity("blog", "blog-1", "ko",
+                "{\"title\":\"베트남 전통 목조 건축의 장부맞춤 비결\",\"excerpt\":\"접착제나 쇠못 하나 없이 기둥과 보를 결구하는 전통 장인 기술과 천년을 버텨낸 유연한 건축 지혜.\",\"content\":\"베트남 전통 건축은 뛰어난 목조 가구식 구조를 기반으로 합니다. 기둥과 보, 서까래 등 모든 부재가 정교한 장부맞춤으로 결합됩니다.\\n\\n옛 목수들은 집을 사람의 몸과 같다고 보았습니다. 유연한 목조 관절 덕분에 폭풍과 지진 속에서도 부러지지 않고 흔들림을 흡수하며 건물을 온전히 지켜냅니다.\",\"category\":\"건축 고증\",\"readTime\":\"5분 분량\"}"),
+            new ContentTranslationEntity("blog", "blog-1", "ja",
+                "{\"title\":\"ベトナム伝統建築における木組み・仕口の秘奥\",\"excerpt\":\"接着剤も鉄釘も一切用いない柱梁の組積技術。千年の風雨を耐え抜くしなやかな構造美の秘密。\",\"content\":\"ベトナムの伝統木造建築は、精緻な木組み構造によって支えられています。柱、梁、垂木などのすべての構造部材が、寸分の狂いもない仕口と継手によって結び合わされます。\\n\\n古来の棟梁たちは建築を生命ある人体になぞらえました。しなやかな関節のように外力を受け流し、台風や地震の揺れを巧みに吸収して倒壊を防ぎます。\",\"category\":\"建築考証\",\"readTime\":\"5分で読める\"}"),
+
+            // Blog 2 (blog-2)
+            new ContentTranslationEntity("blog", "blog-2", "en",
+                "{\"title\":\"Heritage Digitization: How 3D Printing Revives Thang Long Memories\",\"excerpt\":\"The journey of recreating One Pillar Pagoda and Khue Van Cac with micron accuracy from archaeological and historical data.\",\"content\":\"In the digital era, cultural preservation transcends photographs and glass-case museum models. VIETTORIA employs advanced additive manufacturing and eco-friendly bio-filaments to place tangible heritage directly into collectors' hands.\",\"category\":\"Heritage & Tech\",\"readTime\":\"4 min read\"}"),
+            new ContentTranslationEntity("blog", "blog-2", "fr",
+                "{\"title\":\"Numérisation du Patrimoine : Quand l'impression 3D ressuscite la mémoire de Thang Long\",\"excerpt\":\"L'épopée de la renaissance de la Pagode au Pilier Unique et du Pavillon Khue Van Cac au micron près.\",\"content\":\"À l'ère numérique, la sauvegarde de la mémoire collective dépasse le cadre des photographies d'archives. VIETTORIA associe modélisation 3D et polymères biosourcés pour rendre le patrimoine palpable et vivant.\",\"category\":\"Patrimoine & Tech\",\"readTime\":\"4 min de lecture\"}"),
+            new ContentTranslationEntity("blog", "blog-2", "zh",
+                "{\"title\":\"数字遗产：3D打印重现升龙千年古韵\",\"excerpt\":\"依据考古实测数据，以微米级精度再现一柱寺与奎文阁的皇家工艺复原历程。\",\"content\":\"在数字化时代，文化遗产的传承不再局限于陈列柜中的静态展品。VIETTORIA通过精密的3D打印与环保生物材质，让历史古迹触手可及。\",\"category\":\"遗产科技\",\"readTime\":\"4分钟阅读\"}"),
+            new ContentTranslationEntity("blog", "blog-2", "ko",
+                "{\"title\":\"디지털 유산: 3D 프린팅으로 되살아나는 탕롱의 기억\",\"excerpt\":\"고고학적 고증 데이터를 바탕으로 일주사와 규문각을 마이크로미터 단위의 정밀도로 재현한 여정.\",\"content\":\"디지털 시대의 문화유산 보존은 유리 진열장 너머의 관람에 머무르지 않습니다. VIETTORIA는 정밀 3D 기술과 친환경 소재를 결합하여 역사의 손길을 대중의 일상으로 전달합니다.\",\"category\":\"유산 & 테크\",\"readTime\":\"4분 분량\"}"),
+            new ContentTranslationEntity("blog", "blog-2", "ja",
+                "{\"title\":\"遺産のデジタル化：3Dプリントが蘇らせるタンロンの記憶\",\"excerpt\":\"考古学調査データを基に、一柱寺や奎文閣をミクロン単位の精度で再現する工芸の旅。\",\"content\":\"デジタル時代における文化遺産の継承は、博物館のガラスケースの向こう側だけにとどまりません。VIETTORIAは最新の3Dプリント技術と環境に優しい生分解性素材により、歴史の息吹を人々の手のひらへと届けます。\",\"category\":\"遺産と先端技術\",\"readTime\":\"4分で読める\"}"),
+
+            // Blog 3 (blog-3)
+            new ContentTranslationEntity("blog", "blog-3", "en",
+                "{\"title\":\"Linh Chieu Lake and the Millennial Lotus Philosophy in Vietnamese Sacred Space\",\"excerpt\":\"Exploring the spiritual depth and Buddhist iconography within the spatial landscape of Dien Huu Pagoda.\",\"content\":\"Linh Chieu Lake was never merely an ornamental pond—it represents the sacred realm of the Pure Land in Mahayana Buddhist cosmology, cradling the blooming stone lotus of the pagoda.\",\"category\":\"Culture & Philosophy\",\"readTime\":\"6 min read\"}"),
+            new ContentTranslationEntity("blog", "blog-3", "fr",
+                "{\"title\":\"Le Lac Linh Chieu et la philosophie millénaire du lotus sacré\",\"excerpt\":\"Exploration de la profondeur spirituelle et de l'iconographie bouddhique au sein du sanctuaire de Dien Huu.\",\"content\":\"Le lac Linh Chieu est bien plus qu'une simple pièce d'eau paysagère : il matérialise le bassin sacré de la Terre Pure dans la cosmologie bouddhiste mahayana, portant la fleur de lotus en pierre de la pagode.\",\"category\":\"Culture & Philosophie\",\"readTime\":\"6 min de lecture\"}"),
+            new ContentTranslationEntity("blog", "blog-3", "zh",
+                "{\"title\":\"灵沼池与大越千年莲花哲学\",\"excerpt\":\"探寻延佑寺整体景观中所蕴含的深厚佛教象征主义与灵性宇宙观。\",\"content\":\"灵沼池不仅是一处园林水景，更是大乘佛教宇宙观中净土莲池的神圣投射，承托着一柱寺宛若亭亭出水之青莲。\",\"category\":\"文化哲学\",\"readTime\":\"6分钟阅读\"}"),
+            new ContentTranslationEntity("blog", "blog-3", "ko",
+                "{\"title\":\"린찌에우 호수와 천년 연꽃 철학의 공간적 미학\",\"excerpt\":\"디엔흐우 사원(일주사)의 총체적 경관에 깃든 불교적 상징성과 심오한 영적 세계관 탐구.\",\"content\":\"린찌에우 호수는 단순한 조경용 연못이 아닙니다. 대승불교 우주관에서 정토의 연못을 상징하며, 그 중심에 연꽃처럼 피어난 사찰을 경건하게 받쳐줍니다.\",\"category\":\"문화 & 철학\",\"readTime\":\"6분 분량\"}"),
+            new ContentTranslationEntity("blog", "blog-3", "ja",
+                "{\"title\":\"霊沼池と千年の蓮花哲学が織りなす空間美学\",\"excerpt\":\"延祐寺（一柱寺）の景観全体に宿る深遠な仏教象徴主義と精神的宇宙観の探求。\",\"content\":\"霊沼池は単なる庭園の池ではなく、大乗仏教の宇宙観における極楽浄土の宝池を具現化した神聖な空間であり、池中央に咲く一輪の蓮華として寺院を支えています。\",\"category\":\"文化と精神哲学\",\"readTime\":\"6分で読める\"}")
+        );
+
+        translationRepo.saveAll(list);
     }
 
     private void syncAdminUserFromEnvironment() {

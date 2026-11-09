@@ -27,6 +27,7 @@ public class HeritageService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
     private final ObjectMapper objectMapper;
+    private final ContentLocalizationService localizationService;
     private final String adminUsername;
 
     public HeritageService(
@@ -39,6 +40,7 @@ public class HeritageService {
             PasswordEncoder passwordEncoder,
             JwtTokenProvider tokenProvider,
             ObjectMapper objectMapper,
+            ContentLocalizationService localizationService,
             @Value("${app.admin.username}") String adminUsername) {
         this.collectionRepo = collectionRepo;
         this.productRepo = productRepo;
@@ -49,6 +51,7 @@ public class HeritageService {
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
         this.objectMapper = objectMapper;
+        this.localizationService = localizationService;
         this.adminUsername = adminUsername;
     }
 
@@ -56,13 +59,24 @@ public class HeritageService {
 
     @Transactional(readOnly = true)
     public List<CollectionDto> getPublishedCollections() {
-        return collectionRepo.findByStatusOrderByDisplayOrderAsc("published").stream()
+        return getPublishedCollections("vi");
+    }
+
+    @Transactional(readOnly = true)
+    public List<CollectionDto> getPublishedCollections(String lang) {
+        List<CollectionDto> list = collectionRepo.findByStatusOrderByDisplayOrderAsc("published").stream()
                 .map(this::mapCollectionToDto)
                 .collect(Collectors.toList());
+        return localizationService.localizeCollections(list, lang);
     }
 
     @Transactional(readOnly = true)
     public CollectionDto getCollectionBySlug(String slug) {
+        return getCollectionBySlug(slug, "vi");
+    }
+
+    @Transactional(readOnly = true)
+    public CollectionDto getCollectionBySlug(String slug, String lang) {
         CollectionEntity entity = collectionRepo.findBySlug(slug).orElse(null);
         if (entity == null) return null;
 
@@ -70,12 +84,17 @@ public class HeritageService {
         List<ProductDto> products = productRepo.findByCollectionIdAndStatusOrderByDisplayOrderAsc(entity.getId(), "published").stream()
                 .map(this::mapProductToDto)
                 .collect(Collectors.toList());
-        dto.setProducts(products);
-        return dto;
+        dto.setProducts(localizationService.localizeProducts(products, lang));
+        return localizationService.localizeCollection(dto, lang);
     }
 
     @Transactional(readOnly = true)
     public List<ProductDto> getPublishedProducts(String collectionId, String search) {
+        return getPublishedProducts(collectionId, search, "vi");
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductDto> getPublishedProducts(String collectionId, String search, String lang) {
         List<ProductEntity> list = productRepo.findByStatusOrderByDisplayOrderAsc("published");
 
         if (collectionId != null && !collectionId.isBlank() && !"all".equalsIgnoreCase(collectionId)) {
@@ -91,11 +110,17 @@ public class HeritageService {
             ).collect(Collectors.toList());
         }
 
-        return list.stream().map(this::mapProductToDto).collect(Collectors.toList());
+        List<ProductDto> dtos = list.stream().map(this::mapProductToDto).collect(Collectors.toList());
+        return localizationService.localizeProducts(dtos, lang);
     }
 
     @Transactional(readOnly = true)
     public ProductDto getProductBySlugOrCode(String slugOrCode) {
+        return getProductBySlugOrCode(slugOrCode, "vi");
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDto getProductBySlugOrCode(String slugOrCode, String lang) {
         ProductEntity entity = productRepo.findBySlugOrCode(slugOrCode).orElse(null);
         if (entity == null) return null;
 
@@ -119,10 +144,10 @@ public class HeritageService {
                     .limit(3)
                     .map(this::mapProductToDto)
                     .collect(Collectors.toList());
-            dto.setRelatedProducts(related);
+            dto.setRelatedProducts(localizationService.localizeProducts(related, lang));
         }
 
-        return dto;
+        return localizationService.localizeProduct(dto, lang);
     }
 
     @Transactional(readOnly = true)
@@ -140,18 +165,35 @@ public class HeritageService {
 
     @Transactional(readOnly = true)
     public List<BlogPostDto> getPublishedBlogs() {
-        return blogPostRepo.findByStatusOrderByPublishedAtDesc("published").stream()
+        return getPublishedBlogs("vi");
+    }
+
+    @Transactional(readOnly = true)
+    public List<BlogPostDto> getPublishedBlogs(String lang) {
+        List<BlogPostDto> list = blogPostRepo.findByStatusOrderByPublishedAtDesc("published").stream()
                 .map(this::mapBlogToDto)
                 .collect(Collectors.toList());
+        return localizationService.localizeBlogs(list, lang);
     }
 
     @Transactional(readOnly = true)
     public BlogPostDto getBlogBySlug(String slug) {
-        return blogPostRepo.findBySlug(slug).map(this::mapBlogToDto).orElse(null);
+        return getBlogBySlug(slug, "vi");
+    }
+
+    @Transactional(readOnly = true)
+    public BlogPostDto getBlogBySlug(String slug, String lang) {
+        BlogPostDto dto = blogPostRepo.findBySlug(slug).map(this::mapBlogToDto).orElse(null);
+        return localizationService.localizeBlog(dto, lang);
     }
 
     @Transactional(readOnly = true)
     public Map<String, Object> getFeatured() {
+        return getFeatured("vi");
+    }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getFeatured(String lang) {
         List<ProductEntity> published = productRepo.findByStatusOrderByDisplayOrderAsc("published");
         ProductEntity hero = published.stream().filter(ProductEntity::isHeroRelease).findFirst()
                 .orElse(published.isEmpty() ? null : published.get(0));
@@ -173,10 +215,10 @@ public class HeritageService {
                 .collect(Collectors.toList());
 
         Map<String, Object> res = new HashMap<>();
-        res.put("heroProduct", hero != null ? mapProductToDto(hero) : null);
-        res.put("featuredProducts", featuredProducts);
-        res.put("collections", collections);
-        res.put("latestBlogs", latestBlogs);
+        res.put("heroProduct", hero != null ? localizationService.localizeProduct(mapProductToDto(hero), lang) : null);
+        res.put("featuredProducts", localizationService.localizeProducts(featuredProducts, lang));
+        res.put("collections", localizationService.localizeCollections(collections, lang));
+        res.put("latestBlogs", localizationService.localizeBlogs(latestBlogs, lang));
         return res;
     }
 
@@ -381,7 +423,9 @@ public class HeritageService {
         entity.setReadTime(dto.getReadTime());
         entity.setPublishedAt(dto.getPublishedAt() != null ? dto.getPublishedAt() : "2026-03-30");
         entity.setStatus(dto.getStatus() != null ? dto.getStatus() : "published");
-        return mapBlogToDto(blogPostRepo.save(entity));
+        BlogPostDto savedDto = mapBlogToDto(blogPostRepo.save(entity));
+        localizationService.autoTranslateBlogAsync(savedDto);
+        return savedDto;
     }
 
     @Transactional
@@ -397,11 +441,15 @@ public class HeritageService {
         if (dto.getReadTime() != null) entity.setReadTime(dto.getReadTime());
         if (dto.getPublishedAt() != null) entity.setPublishedAt(dto.getPublishedAt());
         if (dto.getStatus() != null) entity.setStatus(dto.getStatus());
-        return mapBlogToDto(blogPostRepo.save(entity));
+        localizationService.invalidateTranslation("blog", id);
+        BlogPostDto savedDto = mapBlogToDto(blogPostRepo.save(entity));
+        localizationService.autoTranslateBlogAsync(savedDto);
+        return savedDto;
     }
 
     @Transactional
     public void adminDeleteBlog(String id) {
+        localizationService.invalidateTranslation("blog", id);
         blogPostRepo.deleteById(id);
     }
 

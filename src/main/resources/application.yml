@@ -37,6 +37,9 @@ spring:
 app:
   upload:
     dir: ${APP_UPLOAD_DIR:uploads}
+  gemini:
+    api-key: ${GEMINI_API_KEY:}
+    model: ${GEMINI_MODEL:gemini-2.5-flash}
   cloudinary:
     cloud-name: ${CLOUDINARY_CLOUD_NAME:}
     api-key: ${CLOUDINARY_API_KEY:}
