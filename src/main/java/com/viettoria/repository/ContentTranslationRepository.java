@@ -21,3 +21,4 @@ public interface ContentTranslationRepository extends JpaRepository<ContentTrans
 
     void deleteByEntityTypeAndEntityId(String entityType, String entityId);
 }
+

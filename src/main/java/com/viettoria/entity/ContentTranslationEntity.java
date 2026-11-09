@@ -107,3 +107,4 @@ public class ContentTranslationEntity {
         this.updatedAt = updatedAt;
     }
 }
+

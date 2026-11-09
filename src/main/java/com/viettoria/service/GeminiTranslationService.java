@@ -25,7 +25,7 @@ public class GeminiTranslationService {
     @Value("${app.gemini.api-key:${GEMINI_API_KEY:}}")
     private String apiKey;
 
-    @Value("${app.gemini.model:${GEMINI_MODEL:gemini-2.5-flash}}")
+    @Value("${app.gemini.model:${GEMINI_MODEL:gemini-3.5-flash-lite}}")
     private String model;
 
     public GeminiTranslationService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
