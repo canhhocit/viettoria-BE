@@ -2,6 +2,7 @@ package com.viettoria.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.viettoria.dto.AudioGuideDto;
 import com.viettoria.dto.BlogPostDto;
 import com.viettoria.dto.CollectionDto;
 import com.viettoria.dto.ProductDto;
@@ -216,7 +217,7 @@ public class ContentLocalizationService {
 
         Optional<ContentTranslationEntity> cached = translationRepo.findByEntityTypeAndEntityIdAndLangCode("product", dto.getId(), lang);
         if (cached.isPresent()) {
-            copy = applyProductTranslation(dto, cached.get().getFieldsJson());
+            copy = applyProductTranslation(dto, cached.get().getFieldsJson(), lang);
         } else if (geminiService.isConfigured()) {
             Map<String, String> source = new HashMap<>();
             if (dto.getName() != null) source.put("name", dto.getName());
@@ -228,7 +229,7 @@ public class ContentLocalizationService {
             Map<String, String> translated = geminiService.translateFields(source, lang, "Vietnamese Architectural Monument 3D Collectible");
             if (translated != null && !translated.isEmpty()) {
                 saveTranslation("product", dto.getId(), lang, translated);
-                copy = applyProductTranslation(dto, translated);
+                copy = applyProductTranslation(dto, translated, lang);
             }
         }
 
@@ -255,7 +256,7 @@ public class ContentLocalizationService {
 
         return list.stream().map(item -> {
             String fieldsJson = cachedMap.get(item.getId());
-            ProductDto result = (fieldsJson != null) ? applyProductTranslation(item, fieldsJson) : item;
+            ProductDto result = (fieldsJson != null) ? applyProductTranslation(item, fieldsJson, lang) : item;
             if (result.getCollection() != null) {
                 result.setCollection(localizeCollection(result.getCollection(), lang));
             }
@@ -263,16 +264,16 @@ public class ContentLocalizationService {
         }).collect(Collectors.toList());
     }
 
-    private ProductDto applyProductTranslation(ProductDto dto, String fieldsJson) {
+    private ProductDto applyProductTranslation(ProductDto dto, String fieldsJson, String lang) {
         try {
             Map<String, String> map = objectMapper.readValue(fieldsJson, new TypeReference<Map<String, String>>() {});
-            return applyProductTranslation(dto, map);
+            return applyProductTranslation(dto, map, lang);
         } catch (Exception e) {
             return dto;
         }
     }
 
-    private ProductDto applyProductTranslation(ProductDto dto, Map<String, String> map) {
+    private ProductDto applyProductTranslation(ProductDto dto, Map<String, String> map, String lang) {
         if (map == null) return dto;
         ProductDto copy = new ProductDto();
         copy.setId(dto.getId());
@@ -286,7 +287,16 @@ public class ContentLocalizationService {
         copy.setStatus(dto.getStatus());
         copy.setIsHeroRelease(dto.getIsHeroRelease());
         copy.setModelSpecs(dto.getModelSpecs());
-        copy.setAudioGuide(dto.getAudioGuide());
+        if (dto.getAudioGuide() != null) {
+            AudioGuideDto ag = dto.getAudioGuide();
+            AudioGuideDto agCopy = new AudioGuideDto(
+                ag.getTitle(), ag.getDuration(), ag.getAudioUrl(), ag.getNarrator(), ag.getTranscript(), ag.getAudioUrls()
+            );
+            if (ag.getAudioUrls() != null && ag.getAudioUrls().containsKey(lang) && !ag.getAudioUrls().get(lang).isBlank()) {
+                agCopy.setAudioUrl(ag.getAudioUrls().get(lang));
+            }
+            copy.setAudioGuide(agCopy);
+        }
         copy.setGalleryImages(dto.getGalleryImages());
         copy.setStoryBlocks(dto.getStoryBlocks());
         copy.setRelatedProducts(dto.getRelatedProducts());

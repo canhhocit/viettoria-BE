@@ -587,10 +587,15 @@ public class HeritageService {
         dto.setModel3dUrl(p.getModel3dUrl());
 
         if (hasText(p.getAudioTitle()) || hasText(p.getAudioDuration()) || hasText(p.getAudioUrl())
-                || hasText(p.getAudioNarrator()) || hasText(p.getAudioTranscript())) {
+                || hasText(p.getAudioNarrator()) || hasText(p.getAudioTranscript()) || hasText(p.getAudioUrlsJson())) {
             AudioGuideDto audio = new AudioGuideDto(
                     p.getAudioTitle(), p.getAudioDuration(), p.getAudioUrl(), p.getAudioNarrator(), p.getAudioTranscript()
             );
+            if (hasText(p.getAudioUrlsJson())) {
+                try {
+                    audio.setAudioUrls(objectMapper.readValue(p.getAudioUrlsJson(), new com.fasterxml.jackson.core.type.TypeReference<java.util.Map<String, String>>() {}));
+                } catch (Exception ignored) {}
+            }
             dto.setAudioGuide(audio);
         }
 
@@ -642,6 +647,11 @@ public class HeritageService {
             if (a.getAudioUrl() != null) entity.setAudioUrl(a.getAudioUrl());
             if (a.getNarrator() != null) entity.setAudioNarrator(a.getNarrator());
             if (a.getTranscript() != null) entity.setAudioTranscript(a.getTranscript());
+            if (a.getAudioUrls() != null) {
+                try {
+                    entity.setAudioUrlsJson(objectMapper.writeValueAsString(a.getAudioUrls()));
+                } catch (Exception ignored) {}
+            }
         }
 
         if (dto.getDisplayOrder() != null) entity.setDisplayOrder(dto.getDisplayOrder());

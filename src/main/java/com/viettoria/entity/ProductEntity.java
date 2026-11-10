@@ -86,6 +86,10 @@ public class ProductEntity {
     @Column(name = "audio_transcript", columnDefinition = "TEXT")
     private String audioTranscript;
 
+    @Lob
+    @Column(name = "audio_urls_json", columnDefinition = "TEXT")
+    private String audioUrlsJson;
+
     @Column(name = "display_order")
     private int displayOrder = 1;
 
@@ -175,6 +179,9 @@ public class ProductEntity {
 
     public String getAudioTranscript() { return audioTranscript; }
     public void setAudioTranscript(String audioTranscript) { this.audioTranscript = audioTranscript; }
+
+    public String getAudioUrlsJson() { return audioUrlsJson; }
+    public void setAudioUrlsJson(String audioUrlsJson) { this.audioUrlsJson = audioUrlsJson; }
 
     public int getDisplayOrder() { return displayOrder; }
     public void setDisplayOrder(int displayOrder) { this.displayOrder = displayOrder; }

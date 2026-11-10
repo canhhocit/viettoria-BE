@@ -1,11 +1,14 @@
 package com.viettoria.dto;
 
+import java.util.Map;
+
 public class AudioGuideDto {
     private String title;
     private String duration;
     private String audioUrl;
     private String narrator;
     private String transcript;
+    private Map<String, String> audioUrls;
 
     public AudioGuideDto() {}
 
@@ -15,6 +18,15 @@ public class AudioGuideDto {
         this.audioUrl = audioUrl;
         this.narrator = narrator;
         this.transcript = transcript;
+    }
+
+    public AudioGuideDto(String title, String duration, String audioUrl, String narrator, String transcript, Map<String, String> audioUrls) {
+        this.title = title;
+        this.duration = duration;
+        this.audioUrl = audioUrl;
+        this.narrator = narrator;
+        this.transcript = transcript;
+        this.audioUrls = audioUrls;
     }
 
     public String getTitle() { return title; }
@@ -31,4 +43,7 @@ public class AudioGuideDto {
 
     public String getTranscript() { return transcript; }
     public void setTranscript(String transcript) { this.transcript = transcript; }
+
+    public Map<String, String> getAudioUrls() { return audioUrls; }
+    public void setAudioUrls(Map<String, String> audioUrls) { this.audioUrls = audioUrls; }
 }
