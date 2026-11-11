@@ -200,7 +200,7 @@ public class HeritageService {
 
         List<ProductDto> featuredProducts = published.stream()
                 .filter(p -> hero == null || !p.getId().equals(hero.getId()))
-                .limit(4)
+                .limit(16)
                 .map(this::mapProductToDto)
                 .collect(Collectors.toList());
 

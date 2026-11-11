@@ -235,7 +235,36 @@ public class DataInitializer implements ApplicationRunner {
             p5.setStatus("published");
             p5.setHeroRelease(false);
 
-            productRepo.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
+            // 6. Lầu Gác Cung Đình
+            ProductEntity p6 = new ProductEntity();
+            p6.setId("prod-6");
+            p6.setCode("VT-VN-006");
+            p6.setName("Lầu Gác Cung Đình");
+            p6.setSubName("Kiến Trúc Lầu Đài Truyền Thống");
+            p6.setSlug("lau-gac");
+            p6.setCollectionId("col-2");
+            p6.setEpoch("Triều Nguyễn (Thế Kỷ XIX)");
+            p6.setLocation("Hoàng Thành Thăng Long · Cố Đô Huế");
+            p6.setShortDescription("Lầu gác vọng cảnh truyền thống với hệ vì kèo chạm trổ tinh xảo, mái đao chồng diêm thanh thoát vươn lên giữa tầng không.");
+            p6.setScaleRatio("1:100");
+            p6.setHeightCm(14.0);
+            p6.setWidthCm(12.0);
+            p6.setWeightGrams(540.0);
+            p6.setMaterial("BioPETG Khoáng Đá Tự Nhiên");
+            p6.setPartsCount(26);
+            p6.setFinishing("Sơn son thếp vàng, ngói âm dương nung thủ công");
+            p6.setHeroImage("/images/hoang-thanh-thang-long.webp");
+            p6.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
+            p6.setAudioTitle("Âm Vang Lầu Đài Cung Điện Xưa");
+            p6.setAudioDuration("03:30");
+            p6.setAudioUrl(null);
+            p6.setAudioNarrator("Ban Cố Vấn Văn Hóa");
+            p6.setAudioTranscript("Lầu gác là nét đặc sắc trong kiến trúc đình đài Việt Nam, nơi tao nhân mặc khách đàm đạo ngắm trăng, đồng thời là đài quan sát phong thủy uy nghiêm của chốn hoàng cung.");
+            p6.setDisplayOrder(6);
+            p6.setStatus("published");
+            p6.setHeroRelease(false);
+
+            productRepo.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6));
         }
 
         // Seed Story Blocks for Chùa Một Cột
