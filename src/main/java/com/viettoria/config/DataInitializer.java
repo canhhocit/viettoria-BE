@@ -240,7 +240,37 @@ public class DataInitializer implements ApplicationRunner {
             p5.setStatus("published");
             p5.setHeroRelease(false);
 
-            productRepo.saveAll(Arrays.asList(p1, p2, p3, p4, p5));
+            // 6. Gác Lâu Thăng Long
+            ProductEntity p6 = new ProductEntity();
+            p6.setId("prod-6");
+            p6.setCode("VT-HN-006");
+            p6.setName("Gác Lâu Thăng Long");
+            p6.setSubName("Kiến Trúc Cung Đình Thời Lê Sơ");
+            p6.setSlug("gac-lau-thang-long");
+            p6.setCollectionId("col-1");
+            p6.setEpoch("Thời Lê Sơ (Thế Kỷ XV)");
+            p6.setLocation("Hoàng Thành Thăng Long · Hà Nội");
+            p6.setShortDescription("Kiệt tác lầu gác Đại Việt phục dựng từ di vật đất nung khảo cổ Hoàng thành Thăng Long, mái đao chồng diêm vươn cao uy nghi chốn cung đình.");
+            p6.setScaleRatio("1:100");
+            p6.setHeightCm(19.6);
+            p6.setWidthCm(14.3);
+            p6.setWeightGrams(310.0);
+            p6.setMaterial("BioPETG Khoáng Đá Tự Nhiên");
+            p6.setPartsCount(32);
+            p6.setFinishing("Thếp vàng & Ngói lưu ly phục dựng");
+            p6.setHeroImage("/3D/lau-gac-poster.webp");
+            p6.setGalleryImagesJson("[\"/3D/lau-gac-poster.webp\",\"/images/hoang-thanh-thang-long.webp\"]");
+            p6.setAudioTitle("Âm Vang Lầu Gác Cung Điện Lê Sơ");
+            p6.setAudioDuration("02:00");
+            p6.setAudioUrl("");
+            p6.setAudioUrlsJson("{\"vi\":\"\",\"en\":\"\"}");
+            p6.setAudioNarrator("Ban Cố Vấn Khảo Cổ");
+            p6.setAudioTranscript("Hoàng thành Thăng Long thời Lê Sơ thế kỷ 15 là thời kỳ hoàng kim của nền văn hiến và nghệ thuật kiến trúc Đại Việt. Mô hình gác lâu được nghiên cứu và phục dựng từ những mảnh gốm men, ngói rồng và cấu kiện đất nung khai quật tại Hoàng thành Thăng Long, tái hiện hệ vì kèo mộng gỗ phức hợp, mái đao chồng diêm thanh thoát vươn lên giữa tầng không.");
+            p6.setDisplayOrder(6);
+            p6.setStatus("published");
+            p6.setHeroRelease(false);
+
+            productRepo.saveAll(Arrays.asList(p1, p2, p3, p4, p5, p6));
         }
 
         // Seed Story Blocks for Chùa Một Cột
