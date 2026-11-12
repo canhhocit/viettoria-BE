@@ -258,8 +258,8 @@ public class DataInitializer implements ApplicationRunner {
             p6.setMaterial("BioPETG Khoáng Đá Tự Nhiên");
             p6.setPartsCount(32);
             p6.setFinishing("Thếp vàng & Ngói lưu ly phục dựng");
-            p6.setHeroImage("/3D/lau-gac-poster.webp");
-            p6.setGalleryImagesJson("[\"/3D/lau-gac-poster.webp\",\"/images/hoang-thanh-thang-long.webp\"]");
+            p6.setHeroImage("/images/hoang-thanh-thang-long.webp");
+            p6.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
             p6.setAudioTitle("Âm Vang Lầu Gác Cung Điện Lê Sơ");
             p6.setAudioDuration("02:00");
             p6.setAudioUrl("");
