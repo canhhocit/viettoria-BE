@@ -261,10 +261,10 @@ public class DataInitializer implements ApplicationRunner {
             p6.setHeroImage("/images/hoang-thanh-thang-long.webp");
             p6.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
             p6.setAudioTitle("Âm Vang Lầu Gác Cung Điện Lê Sơ");
-            p6.setAudioDuration("02:00");
-            p6.setAudioUrl("");
-            p6.setAudioUrlsJson("{\"vi\":\"\",\"en\":\"\"}");
-            p6.setAudioNarrator("Ban Cố Vấn Khảo Cổ");
+            p6.setAudioDuration("00:23");
+            p6.setAudioUrl("/audio/gac-lau-thang-long-vi.mp3");
+            p6.setAudioUrlsJson("{\"vi\":\"/audio/gac-lau-thang-long-vi.mp3\",\"en\":\"/audio/gac-lau-thang-long-en.mp3\",\"fr\":\"/audio/gac-lau-thang-long-fr.mp3\",\"zh\":\"/audio/gac-lau-thang-long-zh.mp3\",\"ko\":\"/audio/gac-lau-thang-long-ko.mp3\",\"ja\":\"/audio/gac-lau-thang-long-ja.mp3\"}");
+            p6.setAudioNarrator("Thuyết minh Viettoria Atelier");
             p6.setAudioTranscript("Hoàng thành Thăng Long thời Lê Sơ thế kỷ 15 là thời kỳ hoàng kim của nền văn hiến và nghệ thuật kiến trúc Đại Việt. Mô hình gác lâu được nghiên cứu và phục dựng từ những mảnh gốm men, ngói rồng và cấu kiện đất nung khai quật tại Hoàng thành Thăng Long, tái hiện hệ vì kèo mộng gỗ phức hợp, mái đao chồng diêm thanh thoát vươn lên giữa tầng không.");
             p6.setDisplayOrder(6);
             p6.setStatus("published");
