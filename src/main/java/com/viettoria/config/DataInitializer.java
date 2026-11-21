@@ -240,17 +240,17 @@ public class DataInitializer implements ApplicationRunner {
             p5.setStatus("published");
             p5.setHeroRelease(false);
 
-            // 6. Gác Lâu Thăng Long
+            // 6. Lầu Gác Lê Sơ
             ProductEntity p6 = new ProductEntity();
             p6.setId("prod-6");
-            p6.setCode("VT-HN-006");
-            p6.setName("Gác Lâu Thăng Long");
-            p6.setSubName("Kiến Trúc Cung Đình Thời Lê Sơ");
-            p6.setSlug("gac-lau-thang-long");
+            p6.setCode("VT-LS-006");
+            p6.setName("Lầu Gác Lê Sơ");
+            p6.setSubName("Khảo Cứu Hình Thái Kiến Trúc Thời Lê Sơ");
+            p6.setSlug("lau-gac-le-so");
             p6.setCollectionId("col-1");
             p6.setEpoch("Thời Lê Sơ (Thế Kỷ XV)");
-            p6.setLocation("Hoàng Thành Thăng Long · Hà Nội");
-            p6.setShortDescription("Kiệt tác lầu gác Đại Việt phục dựng từ di vật đất nung khảo cổ Hoàng thành Thăng Long, mái đao chồng diêm vươn cao uy nghi chốn cung đình.");
+            p6.setLocation("Khảo Cứu Kiến Trúc Cung Đình Đại Việt");
+            p6.setShortDescription("Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ, được xây dựng trên cơ sở nghiên cứu các hình thái kiến trúc cùng hiện vật khảo cổ đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng thanh thoát, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm uy nghi chốn cung đình xưa.");
             p6.setScaleRatio("1:100");
             p6.setHeightCm(19.6);
             p6.setWidthCm(14.3);
@@ -260,12 +260,12 @@ public class DataInitializer implements ApplicationRunner {
             p6.setFinishing("Thếp vàng & Ngói lưu ly phục dựng");
             p6.setHeroImage("/images/hoang-thanh-thang-long.webp");
             p6.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
-            p6.setAudioTitle("Âm Vang Lầu Gác Cung Điện Lê Sơ");
-            p6.setAudioDuration("00:23");
-            p6.setAudioUrl("/audio/gac-lau-thang-long-vi.mp3");
-            p6.setAudioUrlsJson("{\"vi\":\"/audio/gac-lau-thang-long-vi.mp3\",\"en\":\"/audio/gac-lau-thang-long-en.mp3\",\"fr\":\"/audio/gac-lau-thang-long-fr.mp3\",\"zh\":\"/audio/gac-lau-thang-long-zh.mp3\",\"ko\":\"/audio/gac-lau-thang-long-ko.mp3\",\"ja\":\"/audio/gac-lau-thang-long-ja.mp3\"}");
+            p6.setAudioTitle("Âm Vang Lầu Gác Thời Lê Sơ");
+            p6.setAudioDuration("00:35");
+            p6.setAudioUrl("/audio/lau-gac-le-so-vi.mp3");
+            p6.setAudioUrlsJson("{\"vi\":\"/audio/lau-gac-le-so-vi.mp3\",\"en\":\"/audio/lau-gac-le-so-en.mp3\",\"fr\":\"/audio/lau-gac-le-so-fr.mp3\",\"zh\":\"/audio/lau-gac-le-so-zh.mp3\",\"ko\":\"/audio/lau-gac-le-so-ko.mp3\",\"ja\":\"/audio/lau-gac-le-so-ja.mp3\"}");
             p6.setAudioNarrator("Thuyết minh Viettoria Atelier");
-            p6.setAudioTranscript("Hoàng thành Thăng Long thời Lê Sơ thế kỷ 15 là thời kỳ hoàng kim của nền văn hiến và nghệ thuật kiến trúc Đại Việt. Mô hình gác lâu được nghiên cứu và phục dựng từ những mảnh gốm men, ngói rồng và cấu kiện đất nung khai quật tại Hoàng thành Thăng Long, tái hiện hệ vì kèo mộng gỗ phức hợp, mái đao chồng diêm thanh thoát vươn lên giữa tầng không.");
+            p6.setAudioTranscript("Thời Lê Sơ thế kỷ 15 là giai đoạn đỉnh cao của văn minh Đại Việt. Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ được xây dựng trên cơ sở nghiên cứu các hình thái kiến trúc, hiện vật khảo cổ đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng uy nghi, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm thanh thoát.");
             p6.setDisplayOrder(6);
             p6.setStatus("published");
             p6.setHeroRelease(false);
