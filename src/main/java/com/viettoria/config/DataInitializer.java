@@ -250,7 +250,7 @@ public class DataInitializer implements ApplicationRunner {
             p6.setCollectionId("col-1");
             p6.setEpoch("Thời Lê Sơ (Thế Kỷ XV)");
             p6.setLocation("Khảo Cứu Kiến Trúc Cung Đình Đại Việt");
-            p6.setShortDescription("Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ, được xây dựng trên cơ sở nghiên cứu các hình thái kiến trúc cùng hiện vật khảo cổ đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng thanh thoát, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm uy nghi chốn cung đình xưa.");
+            p6.setShortDescription("Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ do tác giả Nguyễn Huy Hoàng nghiên cứu phục dựng trên cơ sở các hình thái kiến trúc, họa tiết gốm hoa lam thế kỷ 15 cùng hiện vật khảo cổ học đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng thanh thoát, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm uy nghi chốn cung đình xưa.");
             p6.setScaleRatio("1:100");
             p6.setHeightCm(19.6);
             p6.setWidthCm(14.3);
@@ -258,14 +258,14 @@ public class DataInitializer implements ApplicationRunner {
             p6.setMaterial("BioPETG Khoáng Đá Tự Nhiên");
             p6.setPartsCount(32);
             p6.setFinishing("Thếp vàng & Ngói lưu ly phục dựng");
-            p6.setHeroImage("/images/hoang-thanh-thang-long.webp");
-            p6.setGalleryImagesJson("[\"/images/hoang-thanh-thang-long.webp\"]");
+            p6.setHeroImage("/images/laugacLeso/2D-laugac2.jpg");
+            p6.setGalleryImagesJson("[\"/images/laugacLeso/2D-laugac2.jpg\",\"/images/laugacLeso/2D-laugac.jpg\",\"/images/laugacLeso/camhunglaugac.jpg\"]");
             p6.setAudioTitle("Âm Vang Lầu Gác Thời Lê Sơ");
             p6.setAudioDuration("00:35");
             p6.setAudioUrl("/audio/lau-gac-le-so-vi.mp3");
             p6.setAudioUrlsJson("{\"vi\":\"/audio/lau-gac-le-so-vi.mp3\",\"en\":\"/audio/lau-gac-le-so-en.mp3\",\"fr\":\"/audio/lau-gac-le-so-fr.mp3\",\"zh\":\"/audio/lau-gac-le-so-zh.mp3\",\"ko\":\"/audio/lau-gac-le-so-ko.mp3\",\"ja\":\"/audio/lau-gac-le-so-ja.mp3\"}");
-            p6.setAudioNarrator("Thuyết minh Viettoria Atelier");
-            p6.setAudioTranscript("Thời Lê Sơ thế kỷ 15 là giai đoạn đỉnh cao của văn minh Đại Việt. Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ được xây dựng trên cơ sở nghiên cứu các hình thái kiến trúc, hiện vật khảo cổ đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng uy nghi, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm thanh thoát.");
+            p6.setAudioNarrator("Tác giả phục dựng: Nguyễn Huy Hoàng · Thuyết minh Viettoria Atelier");
+            p6.setAudioTranscript("Thời Lê Sơ thế kỷ 15 là giai đoạn đỉnh cao của văn minh Đại Việt. Mô hình lầu gác tái hiện kiến trúc thời Lê Sơ do tác giả Nguyễn Huy Hoàng nghiên cứu phục dựng trên cơ sở các hình thái kiến trúc, họa tiết gốm hoa lam thế kỷ 15 cùng hiện vật khảo cổ học đồng đại và cận đại; tái hiện hệ kiến trúc lầu gác ba tầng uy nghi, vì kèo mộng gỗ phức hợp và tầng mái chồng diêm thanh thoát.");
             p6.setDisplayOrder(6);
             p6.setStatus("published");
             p6.setHeroRelease(false);
